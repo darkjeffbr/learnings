@@ -138,3 +138,53 @@ footer {
 footer p {
     padding-bottom: 2em;
 }
+
+.products-list {
+    width: 940px;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.products-list li {
+    display: inline-block;
+    border: 2px solid;
+    border-radius: 10px;
+    width: 30%;
+    height: 100%;
+    text-align: center;
+    padding: 30px 20px;
+    margin: 0 1.5%;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+.products-list li:hover {
+    border-color: #C78C19;
+}
+
+.products-list li:hover h2{
+    color: #C78C19;
+}
+
+.products-list li:active {
+    border-color: #088C19;
+}
+
+.products-list li:active h2{
+    color: #088C19;
+}
+
+.products-list h2 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.product-description {
+    font-size: 18px;
+}
+
+.product-price {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
