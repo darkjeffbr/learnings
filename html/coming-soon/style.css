@@ -1,0 +1,61 @@
+@keyframes animatetop{
+    from {
+        top: -300px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-image: url("forestbridge.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    color: white;
+    font-family: sans-serif;
+}
+
+.logo {
+    padding: 12px 24px;
+    font-size: 1.5em;
+}
+
+main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+main p {
+    text-align: center;
+}
+
+.message {
+    position: relative;
+    text-transform: uppercase;
+    font-size: 4em;
+    margin: 0 auto;
+    animation: animatetop 1s;
+}
+
+hr {
+    border-top: 1px solid #EEEEEE;
+    width: 40%;
+}
+
+.time-left {
+    font-size: 1.3em;
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+}
