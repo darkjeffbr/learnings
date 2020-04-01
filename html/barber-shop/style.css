@@ -201,5 +201,52 @@ label {
 }
 
 .form-input {
-    margin-top: 2em;
+    width: 50%;
+    margin: 0 0 2em;
+    padding: 10px 25px;
+}
+
+textarea.form-input {
+    height: 10em;
+}
+
+legend {
+    margin: 5px 0;
+}
+
+.newsletter{
+    margin: 20px 0;
+}
+
+.send-button {
+    width: 40%;
+    color: white;
+    font-size: 1.5em;
+    background-color: #FFA500;
+    border-radius: 5px;
+    border-style: none;
+    padding: 0.35em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.send-button:hover{
+    background-color: darkorange;
+    transform: scale(1.2) ;
+}
+
+table {
+    margin: 20px 0;
+}
+
+thead {
+    font-weight: bold;
+    color: white;
+    background-color: #555555;
+}
+
+td,th {
+    border: 1px solid black;
+    padding: 10px;
 }
