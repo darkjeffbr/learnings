@@ -188,3 +188,18 @@ footer p {
     font-weight: bold;
     margin-top: 0.5em;
 }
+
+.contact-info {
+    width: 940px;
+    margin: 0 auto;
+    padding-top: 2em;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.form-input {
+    margin-top: 2em;
+}

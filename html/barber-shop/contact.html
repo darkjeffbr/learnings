@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Contact - Barber Shop</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="reset.css" />
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<header>
+			<div>
+				<img src="logo.png" alt="Logo of the barber shop" />
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="products.html">Products</a></li>
+						<li><a href="contact.html">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<section class="contact-info">
+				<form>
+					<label for="full-name">Full name</label>
+					<input type="text" id="full-name" class="form-input" />
+					<label for="email">E-mail</label>
+					<input type="email" id="email" class="form-input" />
+					<label for="phone">Phone</label>
+					<input type="tel" id="phone" class="form-input" />
+					<label for="message">Message</label>
+					<textarea id="message" class="form-input"></textarea>
+					<fieldset>
+						<legend>How do you prefer to be contacted ?</legend>
+						<label for="radio-email"><input type="radio" id="radio-email" name="contact-method" checked />E-mail</label>
+						<label for="radio-phone"><input type="radio" id="radio-phone" name="contact-method" />Phone</label>
+						<label for="radio-whatsapp"><input type="radio" id="radio-whatsapp" name="contact-method" />WhatsApp</label>
+					</fieldset>
+					<fieldset>
+						<legend>Which timetable do you prefer ?</legend>
+						<select>
+							<option>Morning</option>
+							<option>Afternoon</option>
+							<option>Night</option>
+						</select>
+					</fieldset>
+					<label><input type="checkbox" checked>Would you like to receive news by e-mail?</label>
+					<input type="submit" value="Send" class="send-button" />
+				</form>
+				<table>
+					<thead>
+						<tr>
+							<td>Day</td>
+							<td>Timetable</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Monday</td>
+							<td>8h ~ 20h</td>
+						</tr>
+						<tr>
+							<td>Wednesday</td>
+							<td>8h ~ 20h</td>
+						</tr>
+						<tr>
+							<td>Firday</td>
+							<td>8h ~ 20h</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+		</main>
+		<footer>
+			<img src="white-logo.png" alt="Logo of the barber shop" />
+			<p>&copy; Copyright The Barber Shop - 2020</p>
+		</footer>
+	</body>
+</html>
