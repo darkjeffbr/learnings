@@ -1,0 +1,1 @@
+This is a copy of the [**Coming Soon** template from w3schools](https://www.w3schools.com/w3css/tryw3css_templates_coming_soon.htm).
