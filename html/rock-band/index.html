@@ -3,26 +3,31 @@
     <head>
         <title>Rock Band</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="favicon.png">
+        <link rel="stylesheet" href="reset.css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <header>
             <nav>
                 <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#band">Band</a></li>
-                    <li><a href="#tour">Tour</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="#" class="extra-menu">More</a></li>
-                    <li><a href="#" class="extra-menu-item">Merchandise</a></li>
-                    <li><a href="#" class="extra-menu-item">Extras</a></li>
-                    <li><a href="#" class="extra-menu-item">Medias</a></li>
+                    <li><a href="#" class="menu-item">Home</a></li>
+                    <li><a href="#band" class="menu-item">Band</a></li>
+                    <li><a href="#tour" class="menu-item">Tour</a></li>
+                    <li><a href="#contact" class="menu-item">Contact</a></li>
+                    <li class="extra-menu"><a href="#" class="menu-item">More</a>
+                        <div>
+                            <ul>
+                                <li class="extra-menu-item"><a href="#">Merchandise</a></li>
+                                <li class="extra-menu-item"><a href="#">Extras</a></li>
+                                <li class="extra-menu-item"><a href="#">Medias</a></li>
+                            </ul>
+                        </div>
+                    </li>                    
                 </ul>
             </nav>
-            <div>
-                <img src="lupe.png" alt="Lupe icon">
-            </div>
+            <div class="search-lupe"><img src="lupe.png" alt="Lupe icon"></div>
         </header>
         <main>
             <section class="last-concerts">

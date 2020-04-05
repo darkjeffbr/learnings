@@ -1,0 +1,82 @@
+body{
+    font-family: sans-serif;
+}
+
+header {
+    background-color: #000000;
+    width: 100%;
+}
+nav {
+    display: inline-block;
+}
+
+header li {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0.8em 1.2em;
+}
+
+header li:hover {
+    background-color: #CCCCCC;
+}
+
+header li:hover .menu-item{
+    color: black;
+}
+
+header li a {
+    text-decoration: none;
+}
+
+.menu-item{
+    color: white;
+    text-transform: uppercase;
+}
+
+.extra-menu{
+    background-image: url("arrow-down.png");
+    background-repeat: no-repeat;
+    background-position-x: 85%;
+    background-position-y: center;
+    padding-right: 1.6em;
+}
+
+.extra-menu:hover {
+    background-image: url("arrow-down-hover.png");
+}
+
+.extra-menu div{
+    position: absolute;
+    margin-top: 0.8em;
+    margin-left: -1.2em;
+    display: none;
+}
+
+.extra-menu:hover div{
+    display: block;
+}
+
+.extra-menu-item{
+    display: block;
+    background-color: #FFFFFF;
+}
+
+.extra-menu-item:hover{
+    background-color: #CCCCCC;
+}
+
+.extra-menu-item a{
+    color: black;
+}
+
+.search-lupe{
+    padding: 0.8em;
+    cursor: pointer;
+    float: right;
+    box-sizing: border-box;
+    top: -1px;
+}
+
+.search-lupe:hover{
+    background-color: #f44336;
+}
