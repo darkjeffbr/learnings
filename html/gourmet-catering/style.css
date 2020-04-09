@@ -78,7 +78,6 @@ section {
 
 #about img {
     opacity: 0.75;
-    width: 100%;
 }
 
 .section-title {
@@ -119,6 +118,10 @@ section {
     box-sizing: border-box;
     padding: 30px;
     vertical-align: top;
+}
+
+#menu img {
+    opacity: 0.75;
 }
 
 #menu li {
