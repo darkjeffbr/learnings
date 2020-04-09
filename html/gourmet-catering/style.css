@@ -78,6 +78,7 @@ section {
 
 #about img {
     opacity: 0.75;
+    width: 100%;
 }
 
 .section-title {
