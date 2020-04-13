@@ -1,0 +1,1 @@
+This is the project developed during the Javascript course in [alura](https://www.alura.com.br/).
