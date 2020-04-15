@@ -136,3 +136,18 @@ button[disabled=disabled], button:disabled {
 .invalid-data {
 	background-color: lightcoral;
 }
+
+.fade-out {
+	opacity: 0;
+	transition: 0.5s;
+}
+
+#filtrar-tabela {
+    width: 200px;
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+.hidden {
+	display: none;
+}

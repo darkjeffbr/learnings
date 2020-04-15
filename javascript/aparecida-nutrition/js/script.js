@@ -64,9 +64,13 @@ function isPatientValid(patient) {
     return true;
 }
 
+function getAllPatients(){
+    return document.querySelectorAll(".paciente");
+}
+
 function fillImcInTable (){
 
-    var patients = document.querySelectorAll(".paciente");
+    var patients = getAllPatients();
 
     for(var i = 0; i<patients.length; i++){
 
@@ -85,4 +89,55 @@ function fillImcInTable (){
 
 }
 
-fillImcInTable();
+function filterPatient(event){
+    var inputValue = event.target.value;
+    var patients = getAllPatients();
+    
+    if(inputValue.length <= 0){
+        patients.forEach((tr)=>{
+            tr.classList.remove("hidden");
+        });
+        return;
+    }
+
+    var regExp = RegExp(inputValue, "i");
+    patients.forEach((tr)=>{
+        var patientName = tr.querySelector(".info-nome").textContent;
+
+        if(!regExp.test(patientName)){
+            tr.classList.add("hidden");
+        }
+
+    });
+}
+
+function startFilterPatientListener(){
+    document.querySelector("#filtrar-tabela")
+        .addEventListener("input", filterPatient);
+}
+
+function removePatient(event){
+    event.preventDefault();
+
+    var trNode = event.target.parentNode;
+    trNode.classList.add("fade-out");
+    setTimeout(() => {
+        trNode.remove();        
+    }, 500);
+
+}
+
+function startRemoveListener(){
+
+    document.querySelector("#tabela-pacientes")
+        .addEventListener("dblclick", removePatient);
+
+}
+
+function start(){
+    fillImcInTable();
+    startRemoveListener();
+    startFilterPatientListener();
+}
+
+start();

@@ -18,6 +18,9 @@
 		<main>
 			<section class="container">
 				<h2>My customers</h2>
+				<label for="filtrar-tabela">Filtre:</label>
+				<input type="text" name="filtro" id="filtrar-tabela" placeholder="Input patient name">
+
 				<table>
 					<thead>
 						<tr>
@@ -84,9 +87,35 @@
 					</tbody>
 				</table>
 
+				<span id="erro-ajax" class="hidden">Error while searching new patients</span>
+				<button id="buscar-pacientes" class="botao bto-principal">Search Patients</button>
+
 			</section>
 		</main>
 
+		<section class="container">
+			<h2 id="titulo-form">Add new customer</h2>
+			<form id="form-adiciona">
+				<div class="grupo">
+					<label for="nome">Name:</label>
+					<input id="nome" name="nome" type="text" placeholder="Input the name of your patient" class="campo">
+				</div>
+				<div class="grupo">
+					<label for="peso">Weight:</label>
+					<input id="peso" name="peso" type="text" placeholder="Input the weight of your patient" class="campo campo-medio">
+				</div>
+				<div class="grupo">
+					<label for="altura">Height:</label>
+					<input id="altura" name="altura" type="text" placeholder="Input the height of your patient" class="campo campo-medio">
+				</div>
+				<div class="grupo">
+					<label for="gordura">% Fat:</label>
+					<input id="gordura" name="gordura" type="text" placeholder="Input the body fat of your patient" class="campo campo-medio">
+				</div>
+		
+				<button id="adicionar-paciente" class="botao bto-principal">Add</button>
+			</form>
+		</section>
 
 		<script src="js/script.js"></script>
 
