@@ -134,10 +134,143 @@ function startRemoveListener(){
 
 }
 
+
+function getDataFromForm(){
+    var form = document.querySelector("#form-adiciona");
+
+    var name = form.querySelector("input[name=nome]").value;
+    var weight = form.querySelector("input[name=peso]").value;
+    var height = form.querySelector("input[name=altura]").value;
+    var fat = form.querySelector("input[name=gordura]").value;
+
+    return {
+        "name": name,
+        "weight": weight,
+        "height": height,
+        "fat": fat,
+        "imc": 0
+    }
+}
+
+function clearForm(){
+    var form = document.querySelector("#form-adiciona");
+
+    form.querySelector("input[name=nome]").value = "";
+    form.querySelector("input[name=peso]").value = "";
+    form.querySelector("input[name=altura]").value = "";
+    form.querySelector("input[name=gordura]").value = "";
+
+    cleanErrorMessage();
+}
+
+function cleanErrorMessage(){
+    var errorMessageLabel = document.querySelector(".errorMessage");
+    errorMessageLabel.classList.add('hidden');
+    errorMessageLabel.innerHTML = "";
+
+}
+
+function addErrorMessage(errorMessages){
+    var errorMessageLabel = document.querySelector(".errorMessage");
+
+    errorMessages.forEach((errorMessage)=>{
+        var errorLi = document.createElement("li");
+        errorLi.innerHTML = errorMessage;
+        errorMessageLabel.appendChild(errorLi);
+    });
+
+    errorMessageLabel.classList.remove('hidden');
+
+}
+
+function validatePatient(patient){
+    var errorMessages = [];
+    if(patient.name.length <= 0){
+        errorMessages.push('Wrong value in name');
+    }
+
+    if(patient.fat.length <= 0){
+        errorMessages.push('Wrong value in fat');
+    }
+
+    if(patient.weight <= 0 || patient.weight > 1000){
+        errorMessages.push('Wrong value in weight');
+    }
+
+    if(patient.height <= 0 || patient.height >= 3){
+        errorMessages.push('Wrong value in height');
+    }
+
+    return errorMessages;
+}
+
+function addNewCustomer(event){
+    event.preventDefault();
+
+    cleanErrorMessage();
+
+    var patient = getDataFromForm();
+    var errorMessages = validatePatient(patient);    
+    
+    if(errorMessages.length > 0){
+        addErrorMessage(errorMessages);
+        return;
+    }
+
+    clearForm();
+
+    var imc = calcImc(patient.weight, patient.height);
+    patient.imc = imc;
+
+    var patientTr = patientToTr(patient);
+
+    document.querySelector("#tabela-pacientes")
+        .appendChild(patientTr);
+}
+
+function startAddNewCustomerListener(){
+    document.querySelector("#adicionar-paciente")
+        .addEventListener("click", addNewCustomer);
+}
+
+function loadPatients(){
+    var addButton = document.querySelector("#buscar-pacientes");
+
+    addButton.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "https://api-pacientes.herokuapp.com/pacientes");
+
+        xhr.addEventListener("load", function() {
+            var tBody = document.querySelector("tbody");
+
+            var responseText = xhr.responseText
+                .replace(/nome/g, 'name')
+                .replace(/peso/g, 'weight')
+                .replace(/altura/g, 'height')
+                .replace(/gordura/g, 'fat');
+
+            var patients = JSON.parse(responseText);
+
+            patients.forEach((patient)=>{
+                var tr = patientToTr(patient);
+                tBody.appendChild(tr);
+            });
+
+        });
+
+        xhr.send();
+    });
+}
+
 function start(){
     fillImcInTable();
     startRemoveListener();
     startFilterPatientListener();
+    startAddNewCustomerListener();
+    loadPatients();
 }
 
 start();

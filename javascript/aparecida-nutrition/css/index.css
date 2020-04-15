@@ -151,3 +151,7 @@ button[disabled=disabled], button:disabled {
 .hidden {
 	display: none;
 }
+
+.errorMessage {
+	color: red;
+}
