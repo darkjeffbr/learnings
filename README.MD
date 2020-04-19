@@ -6,6 +6,7 @@ One of my new years resolutions was to learn a bit more about the vast world of 
 * HTML
 * CSS
 * Javascript
+* SASS
 
 ## What is in my willing to learn list ?
 - [ ] Angular/React/Vue
