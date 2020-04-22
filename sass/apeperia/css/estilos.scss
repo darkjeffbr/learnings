@@ -1,3 +1,12 @@
+//Auto generation of sprites with compass
+$sprite-spacing: 2px;
+@import "sprite/*.png";
+
+$plataforma-spacing: 5px;
+@import "plataforma/*.png";
+
+// -----------------------------------------
+
 @import 'helpers/variaveis';
 @import 'helpers/mixins';
 

@@ -64,21 +64,25 @@
     width: 210px;
     height: 38px;
     font-size: 1.2em;
-    @include borda-aredondada;
-    @extend %sombra-padrao;
+    //@include borda-aredondada;
+    //@extend %sombra-padrao;
+    @include border-radius(10px); //Compass mixin
+    @include box-shadow(rgba(black, 0.3) 0px 2px 6.65px); //Compass mixin
     margin-left: 2em;
   }
   
-  .icone-check, .icone-x {
-    background: url(../imagens/sprite.png) no-repeat;
+
+  @include all-sprite-sprites;
+  .sprite-icone-check, .sprite-icone-x {
+    //background: url(../imagens/sprite.png) no-repeat;
     width: 18px;
     height: 18px;
   }
   
-  .icone-check {
+  /*.icone-check {
     background-position: -5px -5px;
   }
   
   .icone-x {
     background-position: -33px -5px;
-  }
+  }*/
