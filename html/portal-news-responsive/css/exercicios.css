@@ -139,7 +139,7 @@ header {
 }
 
 .menu-fechar:before {
-    content: '\2100';
+    content: ' \00D7';
     position: absolute;
     top: 0;
     left: 0;
