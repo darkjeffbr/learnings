@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>javascript arrow function scope</title>
+</head>
+<body>
+    
+    <h1>Title</h1>
+    <p>Paragraph</p>
+    <div>Division</div>
+
+
+    <p><button id="print">Print</button></p>
+    <p><button id="printWithArrow">Print with Arrow</button></p>
+
+    <script>
+        console.log(this); // window
+
+        let displayTextContent = function (){
+            console.log('Anonymous function: ');
+            console.log(this);
+        };
+
+        let displayTextContentWithArrow = () => {
+            console.log('Arrow function: ');
+            console.log(this);
+        };
+
+        $ = document.querySelector.bind(document);
+
+        $('h1').addEventListener('click', displayTextContent);
+        $('p').addEventListener('click', displayTextContent);
+        $('div').addEventListener('click', displayTextContent);
+
+        $('h1').addEventListener('click', displayTextContentWithArrow);
+        $('p').addEventListener('click', displayTextContentWithArrow);
+        $('div').addEventListener('click', displayTextContentWithArrow);
+
+        class PrintSystem {
+
+            constructor(){
+                this._systemVersion = 2;
+            }
+
+            print(nameList){
+                console.group('PRINT WITH ANONYMOUS FUNCTION');
+                nameList.forEach(function(name) {
+                    console.log(this);
+                    //console.log(`SystemVersion ${this._systemVersion}: ${name}`);
+                });
+                console.groupEnd();
+
+            }
+
+            printWithArrow(nameList){
+                console.group('PRINT WITH ARROW FUNCTION');
+                nameList.forEach(name => {
+                    console.log(this);
+                    console.log(`SystemVersion ${this._systemVersion}: ${name}`);
+                });
+                console.groupEnd();
+            }
+
+        }
+
+        let nameList = ['Ammy', 'Jeff', 'Anna', 'John'];
+        let ps = new PrintSystem();
+
+        ps.print(nameList)
+        ps.printWithArrow(nameList)
+
+        class Clock {
+
+            constructor(){
+                this._time = 0;
+
+                setInterval(()=>{
+                    console.log(++this._time);
+                }, 1000);
+            }
+
+        }
+
+        let clock = new Clock();
+
+
+    </script>
+
+</body>
+</html>
