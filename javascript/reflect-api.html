@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflect api</title>
+</head>
+<body>
+    
+<script>
+    let object1 = {
+        name: 'Bob'
+    };
+
+
+    let object2 = {
+        name: 'Leo'
+    };
+
+    function displayName(){
+        console.log(this.name); //This wont work, because "this" is in the scope of the function, and it do not have "this"
+    }
+        
+    displayName();
+    
+
+    /**
+    Using the Reflect object it allows a change of context, meaning that "this" is changed to the given function.
+    So, here the displayName function will have it "this" scope, changed to object1/object2.
+    The third parameter is the parameters of the function, in this case empty because the function do not have parameters.
+    */
+    Reflect.apply(displayName, object1, []);
+    Reflect.apply(displayName, object2, []);
+
+
+    function displayNameWithParameters(prefix, sufix){
+        console.log(`${prefix} ${this.name} ${sufix}`); //This wont work, because "this" is in the scope of the function, and it do not have "this"
+    }
+
+    Reflect.apply(displayNameWithParameters, object1, ['Mr.','the great king.']);
+    Reflect.apply(displayNameWithParameters, object2, ['(',')']);
+
+</script>    
+
+</body>
+</html>

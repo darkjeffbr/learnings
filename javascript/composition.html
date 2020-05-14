@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composition</title>
+</head>
+<body>
+    <p>Once upon a time ....</p>
+
+    <script>
+
+        //The examples here are only for the same of learning, in a real world, they wouldn't make sense
+
+        class Plane {
+
+            constructor(name){
+                this._name = name;
+            }
+
+            fly(){
+                console.log(`${this._name} is flying.`);
+            }
+
+            turnOnEngine(){
+                console.log('Turning on engine');
+            }
+
+            closeDoors(){
+                console.log('Closing doors');
+            }
+
+        }
+
+
+        /*
+        Bird also have a method fly, then to reuse code, we add an attribute of type 'Plane'
+        and use the fly method from Plane
+        */
+        class Bird {
+
+            constructor(name){
+                this._name = name;
+                //Create an instance of Plane
+                this._plane = new Plane(name);
+            }
+
+            fly(){
+                //Use fly from Plane
+                this._plane.fly();
+            }
+
+        }
+
+        new Bird('BlueBird').fly();
+
+
+        /*
+        Here we use a method from Plane without 
+        an instance of Plane
+        */
+        class Bird2 {
+
+            constructor(name){
+                this._name = name;
+            }
+
+            fly(){
+                //Call fly from Plane changing the context with Reflect.apply
+                Reflect.apply(Plane.prototype.fly, this, []);
+            }
+
+        }
+
+        new Bird2('BlueBird-2').fly();
+
+
+
+    </script>
+
+</body>
+</html>
