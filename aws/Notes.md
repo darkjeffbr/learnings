@@ -19,3 +19,11 @@
 - **Never use the ROOT account except for initial setup**
 - **Never ser ROOT IAM Credentials**
 
+# EC2
+- Provide virtual machines with different and custom configurations
+- An instance have two different IPs:
+-- Public: Changes every time the instance is restarted. Used to access the instance from the outside-world
+-- Private: Identifies the instance inside AWS network. Do not change with restarts
+
+# Security groups
+- Work like firewalls
