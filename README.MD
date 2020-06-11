@@ -8,7 +8,7 @@ One of my new years resolutions was to learn a bit more about the vast world of 
 * Javascript
 * SASS
 * Design patterns
+* Amazon Web Services
 
 ## What is in my willing to learn list ?
 - [ ] Angular/React/Vue
-- [ ] Amazon Web Services
