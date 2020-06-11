@@ -24,6 +24,7 @@
 - An instance have two different IPs:
 -- Public: Changes every time the instance is restarted. Used to access the instance from the outside-world
 -- Private: Identifies the instance inside AWS network. Do not change with restarts
+- Amazon also provide a so called Elastic IP, which is an static ip address bound to you account that can be associated with an instance. An user can have up to 4 Elastic IP, more thant that is necessary to talk to AWS.
 
 # Security groups
 - Work like firewalls
