@@ -22,8 +22,8 @@
 # EC2
 - Provide virtual machines with different and custom configurations
 - An instance have two different IPs:
--- Public: Changes every time the instance is restarted. Used to access the instance from the outside-world
--- Private: Identifies the instance inside AWS network. Do not change with restarts
+    - Public: Changes every time the instance is restarted. Used to access the instance from the outside-world
+    - Private: Identifies the instance inside AWS network. Do not change with restarts
 - Amazon also provide a so called Elastic IP, which is an static ip address bound to you account that can be associated with an instance. An user can have up to 4 Elastic IP, more thant that is necessary to talk to AWS.
 
 ## Instance Types - Main Ones
@@ -54,14 +54,14 @@
 
 # EC2 Load Balancing - ELB
 - Why ?
--- Spread load across multiple downstream instances
--- Expose a single point of access (DNS) to your application
--- Seamlessly handle failures of downstream instances
--- Do regular health checks to your instances
--- Provide SSL termination (HTTPS) for your websites
--- Enforce stickiness with cookies
--- High availability across zones
--- Separate public traffic from private traffic
+    - Spread load across multiple downstream instances
+    - Expose a single point of access (DNS) to your application
+    - Seamlessly handle failures of downstream instances
+    - Do regular health checks to your instances
+    - Provide SSL termination (HTTPS) for your websites
+    - Enforce stickiness with cookies
+    - High availability across zones
+    - Separate public traffic from private traffic
 ## Health Checks
 - Super important! The way to know if instances are available to reply to requests
 - Is done on a port and a route
@@ -80,18 +80,18 @@
 - Load balancing to multiple applications on the same machine (ex: containers)
 - Support redicts (from HTTP to HTTPS for example)
 - Routing tables to different target groups:
--- Based on path in URL
--- Based on hostname in URL
--- Based on query string, headers
+    - Based on path in URL
+    - Based on hostname in URL
+    - Based on query string, headers
 - Great fit for micro services and container-based application
 - ALB can route to multiple target groups
 - Health checks are at the target group level
 
 
 - IMPORTANT: Application server do not see the IP of the client directly
--- True IP -> Header X-Forwarded-For
--- Port -> X-Forwarded-Port
--- Protocol -> X-Forwarded-Proto
+    - True IP -> Header X-Forwarded-For
+    - Port -> X-Forwarded-Port
+    - Protocol -> X-Forwarded-Proto
 
 #### Target Groups
 - EC2 instances
