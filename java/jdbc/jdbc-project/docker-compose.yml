@@ -1,0 +1,13 @@
+version: '3.0'
+
+services:
+  postgres:
+    container_name: jdbc_postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+      PGDATA: /data/postgres
+    ports:
+      - "6543:5432"
+    restart: unless-stopped
