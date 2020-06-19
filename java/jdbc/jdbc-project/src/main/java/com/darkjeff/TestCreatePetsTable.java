@@ -1,17 +1,14 @@
 package com.darkjeff;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static com.darkjeff.Constants.CONNECTION_URL;
 
 public class TestCreatePetsTable {
 
     public static void main(String[] args) throws SQLException {
 
-        Connection connection = DriverManager.getConnection(CONNECTION_URL);
+        Connection connection = ConnectionFactory.getConnection();
 
         Statement statement = connection.createStatement();
 
@@ -31,6 +28,7 @@ public class TestCreatePetsTable {
             System.out.println("STATEMENT DIFFERENT FROM SELECT WAS ISSUED");
         }
 
+        statement.close();
         connection.close();
 
     }

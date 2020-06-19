@@ -10,7 +10,7 @@ public class TestGetConnection {
 
     public static void main(String[] args) throws SQLException {
         //If no exception is thrown, then it worked!
-        Connection connection = DriverManager.getConnection(CONNECTION_URL);
+        Connection connection = ConnectionFactory.getConnection();
         connection.close();
     }
 }
