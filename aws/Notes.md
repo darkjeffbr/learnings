@@ -102,3 +102,85 @@
 ### Network Load Balancer
 - New generation - 2017
 - TCP, TLS (secure TCP) and UDP
+- Layer 4 - TCP / UDP
+- Handle millions of request per seconds
+- Less latency ~ 100ms (vs 400ms for ALB)
+- Has one static IP per AZ, support assigning Elastic IP
+- Not include in the free tier
+
+
+
+### Load Balancer Stickiness
+- Same client is always redirected to the same instance behind load balancer
+- Works for CLB & ALB
+- The "cookie" used for stickness has an expiration date you control
+- **Use case**: make sure user doesn't lose his session data
+- **ATENTION**: Enabling stickness may bring imbalance to the load over the backend EC2 instances
+
+### Cross-Zone Load Balancing
+- With Cross Zone Load Balancing: each load balancer instance distributes evenly across all registered instances in all AZ.
+- Classic Load Balancer:
+    - Disabled by default
+    - No charges for inter AZ data if enabled
+- Application Load Balancer
+    - Always on (can't be disabled)
+    - No charges for inter AZ data
+- Network Load Balancer
+    - Disabled by default
+    - You pay charges ($) for inter AZ data if enabled
+
+### Load Balancer - SSL Certificates
+ - The load balancer uses an X.509 certificate (SSL/TLS server certificate)
+ - You can manage certificates using AWS Certificate Manager (ACM)
+ - You can create/upload your own certificates alternatively
+ - HTTPS listener:
+     - Must specify default certificate
+     - Is possible to add optional certs to support multiple domains
+     - Clients can use Server Name Indication (SNI) to specify the hostname they reach
+     - Ability to specify a security policy to support older versions of SSL/TLS (legacy clients)
+#### Server name Indication
+- SNI solves the problem of loading multiple SSL certificates onto one web server ( to serve multiple websites )
+- Requires the client to indicate the hostname of the target server in the initial SSL handshake
+- The server will find the correct certificate, or return a defult one
+- Note:
+    - Only works for ALB & NLB, CloudFront
+    - Does not work for CLB
+
+### Connection Draining
+- Naming:
+    - CLB: Connection Draining
+    - Target Group: Deregistration delay
+- Time to complete "in-flight requests" while the instance is de-registering or unhealthy
+- Between 1 to 3600 seconds, default 300 seconds
+- Disable if set value to 0
+- Set to a low value if your requests are short
+
+### Auto Scaling Group - ASG
+- Increase/Decrease the number of instances as the load on the website/application changes
+    - In the cloud it is possilbe to create and get rid of servers very quickly
+- Goal:
+    - Scale out (add EC2 instances) to match an increased load
+    - Scale in (remove EC2 instances) to match a decreased load
+    - Ensure we have a minimum and a maximum number of running machines
+    - Automatically register new instances to a load balancer
+- ASG have the following attributes:
+    - Launch configuration:
+        - AMI + Instance type
+        - EC2 User Data
+        - EBS Volumes
+        - Security Groups
+        - SSH Key Pair
+    - Min/Max/Initial capacity
+    - Network + Subnets Information
+    - Load Balancer Information
+- Auto Scaling Alarms
+    - Scale and ASG based on CloudWatch alarms
+    - An alarm monitors a metric
+    - **Metrics are computed for the overall ASG instances**
+- It is now possible to define "better" auto scaling rules managed by EC2
+    - Average CPU Usage
+    - Number of requests on the ELB per instance
+    - Average Network In/Out
+- Is is possible to create custom metrics, sending metrics from application on EC2 to CloudWatch
+- IAM roles attached to an ASG will get assigned to EC2 instances
+- ASG are free. You pay for the underlying resources being launched
