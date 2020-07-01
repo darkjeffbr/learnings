@@ -1,0 +1,276 @@
+type ls
+
+---
+
+idade=34
+nome=Guilherme
+echo $nome tem $idade anos
+
+bash mostra_idade
+#  tem  anos
+
+export nome idade
+bash mostra_idade
+# Guilherme tem 34 anos
+
+env
+
+env idade=90 bash mostra_idade
+
+export -n idade # remove from environment, but still in shell
+
+unset idade # remove from environment and from shell
+
+---
+
+$PWD
+$PS1
+$PS2
+
+---
+
+/root
+/home/user
+
+----
+
+set -o emacs #default
+Ctrl a -- move cursor beginning of line
+Ctrl e -- move cursor end of line
+Ctrl t -- swap two characters
+
+------
+
+history
+HISTFILE
+Ctrl r 
+
+
+--------
+
+echo $PATH
+
+ls; type ls; hash
+
+hash, used to keep in memory the place where a command was found avoid repeated searchs in the PATH
+when PATH is changed, then hashed information is cleared
+
+-------
+
+type # search for functions, builtin and executable
+which command # display which command will be executed ( location ), search for executable files
+
+Bash execute builtin and afterward the executable
+
+builtin pwd ## builtin command forces the builtin command to be executed
+
+whereis ## locate binary, source and manual page files for a command
+
+
+------
+
+
+ls ; echo End of listing
+
+
+------
+
+exit status ---> $?
+
+-----
+
+ls *
+ls log-0?.txt
+ls log-0[123].txt
+ls log-0[0-9].txt
+ls log-0[a-z].txt
+ls log-0[!a-z].txt
+ls {text0*,log-0*}
+
+--------------
+
+echo \* Bem vindo \*
+echo '* Bem vindo *'
+cat file\ with\ space.txt
+
+--------------------
+
+help pwd
+help cd
+
+ls --help
+zip --help
+zip -h
+
+man ls
+
+man ascii
+man -k ascii ## Search keyword and list where it was found (manuals)
+apropos ## perform the keyword search for man behind the scenes
+
+
+MANPATH ## Env variable with the location where man should search for manuals
+/etc/manpath.config 
+/etc/man_db.conf
+manpath ## display where man is actually searching for manuals
+
+groff 
+
+info
+info echo
+tex
+
+
+------
+
+/usr/share/doc
+howtos
+the linux documentation project - tldp
+
+
+-----
+
+locate
+updatedb
+locate -e pattern ### only existing, ignoring deleted stuff
+
+-----------
+
+ls -F ## Classify elements: Directory / at end. Executable * at end. Links @ at end.
+ls -p ## Append / to indicate directories
+ls -a ## show hidden files
+ls --all ##show hidden files
+ls --reverse ; ls -r
+ls --sort=size ; ls -S
+ls --format=long ; ls -l
+ls --recursive ; ls -R
+ls --directory ; ls -d ## print information about directory, ignoring its content
+ls --inode ; ls -i #show inodes information
+
+
+------------------------------
+
+mkdir firstDirectory firstDirectory/subDirectory
+mkdir -p firstDirectory/subDirectory
+
+rmdir firstDirectory/subDirectory firstDirectory
+rmdir -p firstDirectory/subDirectory
+
+mkdir -p Pictures/fotos/201{1,2,3,4,5}/trimestre{1,2,3,4}
+rmdir -p Pictures/fotos/201{1,2,3,4,5}/trimestre{1,2,3,4}
+
+echo Pictures/fotos/201{1,2,3,4,5}/trimestre{1,2,3,4}
+
+--------------------------------
+
+touch contato.hml
+touch -c file #If file does not exist, it is not created
+
+
+cp file1 file2 # copy content of file1 to file2, if file2 does not exist then its created
+
+cp file1 directory # copy content of file1 to directory and the file name will be file1
+
+cp file1 file2 sourceDir/file3 finalDestinationDirectory # copy a lot of files to a DIRECTORY
+
+
+cp -i # Iterative mode, ask if files should be overwritten
+cp -u # only copy files that were changed or are new
+
+cp -b # copy a file, if it already exists then it is overwritten but before overwritting a backup is made. File ending with ~
+
+--------------------------------
+
+tar --->>> tape archive
+tar -c # created
+tar -f # specify file name
+tar -v # verbose
+tar -t # list files from tar archive
+tar -x # extract
+tar -u # update
+tar -z # compress using GZip       .tar.gz
+tar -j # compress using BZip2      .tar.bz2
+
+--------------------------------
+
+# GZip support only one file
+gzip file # will create a file.gz and will erase the original file.
+
+gzip -d file.gz # unzip/deflate/decompress the given file. After decompression erase the given .gz file
+
+gunzip file.gz # unzip/deflate/decompress the given file. After decompression erase the given .gz file
+
+gzip -S # set suffix i.e. extension
+
+gzip -l file.gz # list the content of the given file
+
+gzip -1 | -2 ... -9 # compression level -1 fast and less effective, -9 slow but with best compression. -6 is the default
+
+gzip -c # compresses the file and print the compressed data to the terminal
+
+--------------------------------
+
+# BZip2 support only one file. After compressing delete the original file. After decompression delete the original .bz2 file
+
+bzip2, bunzip2
+bzip2 -d
+bzip -1...-9 # the number is the amount of memory used to compress/decompress
+gzip -c # compresses the file but do not create a .bz2 file
+
+--------------------------------
+
+find . # relative, shows relative output path
+find /home # absolute, shows absolute output path
+
+find -name "log*"
+find -name "*log*"
+find -name "*log-2016-05-[0-9][0-9].txt"
+find -type d -name anyName # find directories
+find -type f -name anyName # find files
+find -type l -name anyName # find symbolic links
+find -user userName # find files belonging to user userName
+find -group groupName # find files belonging to group groupName
+find -size +10k # find files with more then 10k in size
+find -atime # access time, date of last access
+find -mtime # modification time, date of last modification
+find -ctime # change time, date of last change time ( permissions )
+find -inum inodeNumber # find files or references that points to the given inode
+find -name firstName -name secondName # find things with both firstname and secondName
+find -name firstName -o -name secondName # find things with firstname or secondName. -o flag means logical "OR"
+
+
+find \( -name "*log*" -o -name "*2016*" \) -a -name "*7*" # multiples or (-o) and logical and (-a) can be used and the precedence can be given with parenthesis . !!!!! IMPORTANT, the parenthesis must be escaped otherwise it will be interpreted by bash
+
+find -name "*log*" ! -name "*111*" # the logical negation ! can also be used here
+
+By default the action when there is a match is "-print" to print the matching paths. To execute a command on each matching path is -exec
+
+find -name "*log*" -exec ls -l "{}" ";"
+find -name "*log*" -exec ls -l \{\} \;
+
+--------------------------------
+
+zip loja.zip bemvindo.html contato.html # compress and archive. zip do not remove source files after compression
+
+unzip loja.zip # decompress files, the original .zip files is not removed
+
+unzip -l loja.zip # list files in the given file, withtout decompress it
+
+zip loja.zip * # will add to a zip file everything from current directory. Standard behavior IS NOT RECURSIVE ( do not enter in directories )
+
+zip -r loja.zip * # will add to a zip file everything from current directory RECURSIVELY (-r)
+
+zip -v # Verbose
+
+unzip -q # quite, do not output
+
+unzip -d /tmp/target/ loja.zip # -d option to specify where to unzip
+
+unzip loja.zip file1 file2 # specify which files from loja.zip are meant to be unziped
+
+unzip loja.zip "file{1,2}" # unzip accept gobbling shell patterns
+
+
+## Extension is not necessary, zip will add .zip automatically
+
+find . -name "*.html" | zip -@ loja.zip # -@ is a signal to zip to understand that the result form a previous command should be used as file source list 
