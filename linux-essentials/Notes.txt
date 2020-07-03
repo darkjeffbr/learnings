@@ -274,3 +274,132 @@ unzip loja.zip "file{1,2}" # unzip accept gobbling shell patterns
 ## Extension is not necessary, zip will add .zip automatically
 
 find . -name "*.html" | zip -@ loja.zip # -@ is a signal to zip to understand that the result form a previous command should be used as file source list 
+
+--------------------------------
+
+wc fileName # count number of lines, words and bytes of the given file
+wc -L fileName # get the number of characters in the largest line in the given file
+
+more fileName # display the content of the file in the screen
+<space> go to next page
+b backward a page
+<Enter> forward by one line
+q quit 
+v open current file in vi for edition
+/ <term> search for term in the current file
+n goes to next occurrence of <term> in the search
+! run an external command
+
+less fileName # display the content of the file in the screen
+it has the same options as more and additional options
+? backward search
+N n goes to previuos occurrence of <term> in the search
+
+--------------------------------
+
+cat # concatenate files and print to the standard output
+cat file1 file2 file3
+cat -n # show line numbers
+
+--------------------------------
+
+head # print first 10 line from a given file. If more files are given the a header containing the file name is printed
+head file1 file2
+
+--------------------------------
+
+tail # print last 10 lines from a given file. If more files are given then a header containing the file name is printed
+
+--------------------------------
+
+I/O redirects
+
+standard input  : channel 0
+standard output : channel 1
+standard error  : channel 2
+
+--- OUTPUT/ERROR
+> redirects the standard output of a command 
+>> redirects and append the standard output of a command 
+2> redirects the standard error of a command 
+2>> redirects and append the standard error of a command 
+
+it is possible to redirect on stream to another
+
+2>&1 redirects standard error to standard output
+
+
+!!!!! IMPORTANT !!!!!
+cat /1234 2>&1 > outputfile.txt # redirect stderr to stdout ( terminal ) and stdout to a file. This will print the error to terminal
+
+cat /1234 > outputfile.txt 2>&1 # redirect stdout to a file and stderr to stdout ( file ). This will print the error to a file
+
+--- INPUT
+< redirects standard input
+
+find -name "log" -name "2016" > files_to_compress.txt
+zip -@ logs < files_to_compress.txt # redirects stdin to a file, i.e., will read the content of the given file and redirects the stream of bytes to what zip command is reading
+
+--- PIPE
+Redirects standard output of a command to standard input of another, | (pipe) is used
+
+
+find . -name "*log*" | zip -@ logs | wc -l
+
+
+--------------------------------
+
+cut - remove sections from each line of files
+
+cut -c 1,5 fileName # get first and fifth char from file
+cut -c 1-5 fileName # get from first until fifth char from file
+
+!!!!! IMPORTANT !!!!!
+cut index start with 1
+
+## below commands have the same output
+cut -c 1-4,14-20 --output-delimiter=";" notafiscal.posicional 
+cut -c 14-20,1-4 --output-delimiter=";" notafiscal.posicional 
+
+
+cut -d: -f 1,5 --output-delimiter="%" /etc/passwd ## -d delimiter , -f field number
+
+
+--------------------------------
+
+paste - merge lines of files
+
+paste file1 file2 # combine line by line the given files, by default use tab as delimiter
+
+paste -d: file1 file2 # -d to se custom delimiter
+
+paste -s file1 file2 # output first file in a line, then second file in a new line (serial)
+
+
+--------------------------------
+
+sort - sort lines of text files
+## take into account the language configured in the system in the following order $LC_ALL then $LC_COLLATE then $LANG. If none of these variable exists then sort uses ascii values of chars
+
+# by default sort uses the whole line in the sorting process
+
+cut -d: -f 1 /etc/passwd | sort
+
+cut -c 1-4,5-13,14-21 --output-delimiter=":" notafiscal.posicional | sort -k 3 -t : -n -r -u -o output.file.name
+# -t set delimiter.
+# -k choose field based in its number, necessary separator or uses blank as default separator. 
+# -n numeric sorting
+# -r reverse order
+# -u removes duplicated entries (unique)
+# -o write the result to an output file
+
+
+--------------------------------
+
+grep - print lines that match patterns
+
+grep pattern fileName # search for pattern in file and print matching lines
+grep -n pattern fileName # show line number
+grep -c pattern fileName # count number of matching lines
+grep -i pattern fileName # ignore case
+grep -l pattern fileName # file name only
