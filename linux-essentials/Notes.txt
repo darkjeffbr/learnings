@@ -403,3 +403,49 @@ grep -n pattern fileName # show line number
 grep -c pattern fileName # count number of matching lines
 grep -i pattern fileName # ignore case
 grep -l pattern fileName # file name only
+
+--------------------------------
+
+echo "Current folder `pwd`"  # execute command and replace its result in place
+echo "Current folder $(pwd)" # execute command and replace its result in place
+
+
+YEAR=2020; echo "Year is ${YEAR}"
+
+source # Run a command in the current shell
+source myScript.sh
+
+echo $? # $? --> exit status of last executed command
+
+$1 $2 $3 # Arguments passed to a script
+$0       # script name
+$#       # total of arguments passed to a script
+$*       # all arguments passed to a script
+
+
+# Loops
+for year in 2020 2021 2022
+do
+	echo ${year}
+done
+
+years='2020 2021 2022'
+for year in $years
+do
+	echo ${year}
+done
+
+for file in `ls *.txt`
+do
+	echo File name $file
+done
+
+for file in $(ls *.txt)
+do
+	echo File name $file
+done
+
+for file in *.txt # gobling
+do
+	echo File name $file
+done
