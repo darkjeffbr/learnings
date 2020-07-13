@@ -42,6 +42,9 @@ Ctrl t -- swap two characters
 ------
 
 history
+!!  ---> execute last command from history
+!NUMBER ---> execute the command number NUMBER from history
+!command --> execute the last ocurrence of command from history
 HISTFILE
 Ctrl r 
 
@@ -74,6 +77,9 @@ ls ; echo End of listing
 
 
 ------
+
+$$ ---> PID current process
+$! ---> PID last process executed in background
 
 exit status ---> $?
 
@@ -120,6 +126,7 @@ info
 info echo
 tex
 
+whatis command # display one-line manual page description for the given command
 
 ------
 
@@ -429,6 +436,16 @@ do
 	echo ${year}
 done
 
+for year in ${*}
+do
+	echo ${year}
+done
+
+for year ## similar to previous for loop
+do
+	echo ${year}
+done
+
 years='2020 2021 2022'
 for year in $years
 do
@@ -449,3 +466,91 @@ for file in *.txt # gobling
 do
 	echo File name $file
 done
+
+--------------------------------
+
+dig - domain information groper is a flexible tool for interrogating DNS name servers
+ifconfig
+host - DNS lookup utility
+
+--------------------------------
+
+useradd -m
+userdel -r
+id   -> print real and effective user and group IDs
+	id -u user # print id and groups for user
+	id -g user # print main group where user is in
+	id -G user # print all groups where user is in
+	id -n user # print names instead of ids
+	
+	id -nG user # print name of all groups for user
+	
+groups ----> dispaly groups for current user of specified user
+
+vipw -> edit passwd file locking it
+who  -> show who is logged on
+w    -> who is logged on and what they are doing
+last -> who a listing of last logged in users
+su   -> run a command with substitute user and group ID
+sudo -i  --> login 
+
+--------------------------------
+
+chmod -> change file/dir mode bits
++ -> add mode
+- -> remove mode
+= -> set exact mode
+u -> user (owner)
+g -> group
+o -> others
+
+modes: r(ead), w(rite), e(x)ecute
+       (s)(4) set user ID
+	   (s)(2) set group ID
+	   (t) (1) restricted deletion flag or sticky bit
+
+chmod u+x,g=rx,o-w file.txt
+chmod ugo+r file.txt
+
+chmod a-x file.txt # 'a' all ( user, group, others )
+
+chmod --reference=file.txt otherFile.txt # apply to otherFile.txt the same modes/attributes from file.txt
+
+chmod -R # recursive
+
+!!!IMPORTANT!!!
+Files and directories permissions are handled separated.
+Write permision in a directory, means that files can be written and removed. If "others" have write permissions in a directory "others" can add new files and delete files from anyone
+
+chown -> change owner
+chown user file
+chown user:group file
+chown :group file
+
+--------------------------------
+
+every user have a primary group and other groups
+
+--------------------------------
+
+drwxrwxrwt 11 root root 240 Jul 13 00:00 /tmp/
+
+Sticky bit ----> 't' at other sections only applies for directories. It means that a file created by a user cannot be deleted by another user.
+
+--------------------------------
+
+user main group is in /etc/passwd other groups are in /etc/group
+
+groupadd # create a new group
+
+usermod # modify a user account
+usermod -a -G groupName userName
+
+newgrp # !!!CHANGES!!! (DO NOT ADD) the group identification of the caller user
+
+--------------------------------
+
+ln ---> makes a link between files. By default hard links (point to the same inode)
+
+ln ORIGINAL_FILE LINK_NAME
+ln -s ORIGINAL_FILE SOFT_LINK_NAME # soft link is a link to the path of the original file
