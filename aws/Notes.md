@@ -558,7 +558,7 @@
 	- Health checks (although limited)
 	- Routing policy: simple, failover, geolocation, latency, weighted, multi value
 - You pay $0.50 per month per hosted zone
-- **DNS Records TTL (Time To Live)
+- **DNS Records TTL (Time To Live)**
    - WebBrowser/Client cache the DNS response for a given time so as to not overload the DNS with a lot of queries
    - TTL is mandatory for each DNS record
    - High TTL: (e.g. 24hr)
@@ -572,10 +572,10 @@
 - AWS resources (LoadBalancer, CloudFront ...) expose an AWS hostname: lbl-1234.us-east-2.elb.amazonaws.com and we want myapp.mydomain.com
     - **CNAME**
 	    - Points a hostname to any other hostname (app.mydomain.com => blabla.anything.com)
-		- **__ONLY FOR NON ROOT DOMAIN (ex.: something.mydomain.com)
+		- **__ONLY FOR NON ROOT DOMAIN (ex.: something.mydomain.com)__**
 	- **Alias**
 	    - Points a hostname to an **AWS resource** (app.mydomain.com => blabla.amazonaws.com)
-		- **__Works for ROOT DOMAIN and NON ROOT DOMAIN (aka mydomain.com)
+		- **__Works for ROOT DOMAIN and NON ROOT DOMAIN (aka mydomain.com)__**
 		- Free of charges
 		- Native health check
 ## Routing Policy
