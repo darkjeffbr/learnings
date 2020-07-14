@@ -544,3 +544,122 @@
 	- This is an extra level of security for your cache (on top of security groups)
 - Memcached
     - Supports SASL-based authentication (advanced)
+	
+# Route53
+- It is a managed DNS
+- Most common records are:
+    - A: hostname to IPv4
+	- AAAA: hostname to IPv6
+	- CNAME: hostname to hostname
+	- Alias: hostname to AWS resource
+- Can use public domain names (you own or buy) and private domain names ( can be resolved by the application in a VPC)
+- Has advanced features:
+    - Load balancing (through DNS - also called client load balancing)
+	- Health checks (although limited)
+	- Routing policy: simple, failover, geolocation, latency, weighted, multi value
+- You pay $0.50 per month per hosted zone
+- **DNS Records TTL (Time To Live)
+   - WebBrowser/Client cache the DNS response for a given time so as to not overload the DNS with a lot of queries
+   - TTL is mandatory for each DNS record
+   - High TTL: (e.g. 24hr)
+       - Less traffic on DNS
+	   - Possibly outdated records
+   - Low TTL: (e.g. 60s)
+       - More traffic on DNS
+	   - Records are outdated for less time
+	   - Easy to change records
+### CNAME vs Alias
+- AWS resources (LoadBalancer, CloudFront ...) expose an AWS hostname: lbl-1234.us-east-2.elb.amazonaws.com and we want myapp.mydomain.com
+    - **CNAME**
+	    - Points a hostname to any other hostname (app.mydomain.com => blabla.anything.com)
+		- **__ONLY FOR NON ROOT DOMAIN (ex.: something.mydomain.com)
+	- **Alias**
+	    - Points a hostname to an **AWS resource** (app.mydomain.com => blabla.amazonaws.com)
+		- **__Works for ROOT DOMAIN and NON ROOT DOMAIN (aka mydomain.com)
+		- Free of charges
+		- Native health check
+## Routing Policy
+
+### Simple Routing Policy
+- Use when you need to redirect to a single resource
+- You can't attach health checks to simple routing policy
+- If multiple values are returned, a random one is chosen by the **client**
+
+### Weighted Routing Policy
+- Control the % of the requests that go to specific endpoint
+- Helpful to test 1% of traffic on new app version for example
+- Helpful to split traffic between two regions
+- Can be associated with Health Checks
+
+### Latency Routing Policy
+- Redirect to the server that has the least latency close to us
+- Super helpful when latency of users is a priority
+- Latency is evaluated in terms of user to designated AWS Region
+- Germany may be redirected to the US (fi that's the lowest latency)
+
+### Failover Routing Policy
+- There is a primary instance
+    - Mandatory health check
+	- In case health check fails, Route53 will failover to the secondary instance
+
+### Geo Location Routing Policy
+- Different from Latency based!
+- This is routing based on user location
+- We specify: traffic from this location should go to this specific IP
+- Should create a "default" policy (in case there's no match on location)
+
+### Multi Value Routing Policy
+- Use when routing traffic to multiple resources
+- Want to associate a Route 53 health checks with records
+- Up to 8 healthy records are returned for each Multi Value query
+- Multi Value is not a substitute for having an ELB
+
+## Health Checks
+- Have X health checks failted -> unhealthy (default 3)
+- After X health checks passed -> health (default 3)
+- Default health check interval: 30s (can set to 10s - higher cost)
+- About 15 health checkers will check the endpoint health
+    - One request every 2 seconds on average
+- Can have HTTP, TCP and HTTPS health checks (no SSL verification)
+- Possibility of integrating the health check with CloudWatch
+- Health checks can be linked to Route53 DNS queries!
+
+## 3rd Party Domains and Route53
+- Route53 as a Registrar
+    - A domain name registrar is an organization that manages the reservation of Internet domain names
+	- Famous names:
+	    - GoDaddy
+		- Google Domains
+		- Etc ...
+	- And also ... Route53 (e.g. AWS)!
+	- Domain Registrar != DNS
+- **If you buy your domain on 3rd party website, you can still use Route53**
+    - 1) Create a Hosted Zone in Route 53
+	- 2) Update NS Records on 3rd party website to use Route53 **name servers**
+	
+# ElasticBeanStalk
+- Managed service
+    - Is a developer centric view of deploying an application on AWS
+	    - It uses all the components: EC2, ASG, ELB, RDS, etc...
+		- All in one view that is easy to make sense of!
+		- We still have full control over the configuration
+    - Instance configuration / OS is handled by beanstalk
+	- Deployment strategy is configurable but performed by ElasticBeanStalk
+- It is free but you pay for the underlying instances / resources
+- Just the application code is the responsability of the developer
+- Three architecture models:
+    - Single Instance deployment: good for dev
+	- LB + ASG : great for production or pre-production web applications
+	- ASG only : great for non-web apps in production (workers, etc...)
+
+- ElasticBeanStalk has three components:
+    - Application
+	- Application version : each deployment gets assigned a version
+	- Environment name (dev, test, prod ...): free naming
+- You deploy application versions to environments and can promote application versions to the next environment
+- Rollback feature to previous application version
+- Full control over lifecycle of environments
+- Support for many platforms:
+    - Go, Java SE, Java with Tomcat, .NET on Windows Server with IIS, Node.js ...
+	- Single Container Docker, Multicontainer Docker, Preconfigured Docker
+- If not supported, you can write your custom platform (advanced)
