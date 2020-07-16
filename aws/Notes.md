@@ -9,10 +9,17 @@
 # Identity and Access Management- IAM
 - Where security is managed: users, groups and roles.
 - Policies are JSON documents.
+	- Actions that can be performed on AWS resources
+	- There is an AWS Policy Simulator to test out what is possible to do with a given policy
 - IAM has a global view
 
 - One IAM User per PHYSICAL PERSON
 - One IAM Role per Application
+	- IAM roles are attached to applications or EC2 instances
+	- IAM roles can come with a policy authorizing exactly what the EC2 instace should be able to do
+		- EC2 Instances can then use these profiles automatically without any additional configurations
+		- **THIS IS THE BEST PRACTICE ON AWS AND YOU SHOULD 100% DO THIS**
+		- An EC2 instance can have only one IAM role attached to it
 - IAM credentials should NEVER BE SHARED
 - Never, ever, ever, ever write IAM credentials in code. EVER!
 - And even less, NEVER EVER EVER COMMIT YOUR IAM credentials
@@ -48,6 +55,13 @@
 - Can have one Elastic IP and one public IP
 - One or more security groups
 
+## Instance Metadata
+- AWS EC2 Instance Metadata is powerful but one of the least known features to developers
+- It allows AWS EC2 instances to "learn about themselves" **without using an IAM Role for that purpose**
+- The URL is http://169.254.169.254/latest/metadata
+- You can retrieve the IAM Role name from the metadata, but you CANNOT retrieve the IAM policy
+- Metadata = Info about the EC2 instance
+- Userdata = Launch script of the EC2 instance
 
 # Security groups
 - Work like firewalls
@@ -850,5 +864,31 @@
 	- If we delete an object, we might still be able to retrieve it for a short time
 		- ex: DELETE 200 => GET 200
 - Note: There is no way to request _"strong_ _consistency"_
+
+# AWS Command Line Interface - CLI
+CLI to access AWS resources
+
+```
+aws configure
+```
+
+# AWS Software Development Kit (SDK)
+- SDK to perform action on AWS from an application code
+	- Official AWS CLI is built upon Python SDK
+- If it is not specified or configured a default region, then us-east-1 will be chosen by default
+- It's recommended to use the **default credential provider chain**
+- The **default credential provider chain** works seamlessly with:
+	- AWS credentials at ~/.aws/credentials (only on your computer or on premise)
+	- Instance Profile Credentials using IAM Roles (for EC2 machines, etc...)
+	- Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+- **Overall, NEVER EVER STORE AWS CREDENTIALS IN YOUR CODE**
+- **Best practice is for credentials to be inherited from mechanisms above, and 100% IAM ROles if working from withing AWS Services**
+
+## Exponential Backoff
+- Any API that fails because of too many calls needs to be retrived with Exponential Backoff
+- These apply to rate limited API
+- Retry mechanism included in SDK API calls
+	- In case of failure the next retry will wait for the double of time of previous wait
+	- Ex.: Fist call fail, then to the second call it will wait 10ms, in case it fails to the third call it will wait 20ms, and so on
 
 
