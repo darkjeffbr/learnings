@@ -663,3 +663,192 @@
     - Go, Java SE, Java with Tomcat, .NET on Windows Server with IIS, Node.js ...
 	- Single Container Docker, Multicontainer Docker, Preconfigured Docker
 - If not supported, you can write your custom platform (advanced)
+
+# S3
+- Allows people to store objects (files) in "buckets" (directories)
+
+## Buckets
+- A bucket must have a globally unique name
+- Buckets are defined at the region level
+- Naming convention:
+    - No uppercase
+	- No underscore
+	- 3-63 characters long
+	- Not an IP
+	- Must start with lowercase letter or number
+
+## Objects
+- Objects (files) have a key
+- The **key** is the FULL path:
+    - s3://my-bucket/**my_file.txt**
+	- s3://my-bucket/**my_folder/another_folder/my_file.txt**
+- The key is composed of _prefix_ + **object name**
+    - s3://my-bucket/ _my_folder/another_folder_/_**my_file.txt**
+- There is no concept of "directories" within buckets (although the UI will trick you to think otherwise)
+	- Just keys with very long names that contain slashes ("/")
+- Object values are the content of the body:
+    - Max Object size is 5TB (5000GB)
+	- If uploading more than 5GB, muse use "multi-part upload"
+- Metadata (list of text key / value pairs - system or user metadata)
+- Tags (Unicode key / value pair - up to 10) - useful for security / lifecycle
+- Version ID (if versioning is enabled)
+
+## Versioning
+- It is possible to version files in Amazon S3
+- It is enabled at the **bucket level**
+- Same key overwrite will increment the "version": 1, 2, 3, ...
+	- It is possible to delete a specific version of an object
+- It is best practice to version your buckets
+    - Protect against unintended deletes (ability to restore a version)
+	    - When file is deleted, adds a delete marker. Which is a new version of the file with size 0
+		- When the delete marker is deleted, the file is restored to its previous version
+	- Easy roll back to previous version
+- Notes:
+	- Any file that is not versioned prior to enabling versioning will have version "null"
+	- Suspending versioning does not delete the previous versions
+
+## S3 Encryption for Objects
+- There are 4 methods of encrypting objects in S3
+    - SSE-S3: encrypts S3 objects using keys handled & managed by AWS
+	- SSE-KMS: leverage AWS Key Management Service to manage encryption keys
+	- SSE-C: when you want to manage your own encryption keys
+	- Client Side Encryption
+- It is important to understand which ones are adapted to which situation
+
+### Server Side Encryption - S3 (SSE-S3)
+- Encryption using keys handled & managed by Amazon S3
+- Object is encrypted server side
+- AES-256 encryption type
+- Must set header: **"x-amz-server-side-encryption":"AES256"**
+    - Send object through HTTP/S + Header
+	- Amazon will apply an encryption using the object + S3 Managed Data Key
+	- **IMPORTANT: Data key is entirely owned and managed by Amazon**
+	
+### Server Side Encryption - Key Management System (SSE-KMS)
+- Encryption using keys handled & managed by KMS
+- Object is encrypted server side
+- AES-256 encryption type
+- Must set header: **"x-amz-server-side-encryption":"aws:kms"**
+    - Send object through HTTP/S + Header
+	- Amazon will apply an encryption using the object + KMS Customer Master Key (CMK)
+	
+### Server Side Encryption - Customer (SSE-C)
+- Server-Side encryption using data keys fully managed by the customer outside of AWS
+- Amazon S3 does not store the encryption key you provide
+- HTTS must be used
+    - Sending a secret so the connection must be encrypted in both ends
+- Encryption key must be provided in HTTP headers, for every HTTP request made
+    - Needs to be sent every request, because it is discarted every single time
+- Send object through HTTPS + Client side data key
+- Amazon will apply an encryption using the object + Client-provided data key
+- To retrieve the file then is necessary to provide the same client side data key used in the upload
+- This requires more management because you manage the keys
+
+### Client Side Encryption
+- Client library suchas as the Amazon S3 Encryption Client
+- Clients must encrypt data themselves before sending to S3
+- Clients must decrypt data themselves when retrieving from S3
+- Customer fully manages the keys and encryption cycle
+
+### Encryption in transit (SSL/TLS)
+- Amazon S3 exposes:
+    - HTTP endpoint : non encrypted
+	- HTTPS endpoint : encryption in flight
+- You're free to use the endpoint you want, but HTTPS is recommended
+- Most clients would use the HTTPS endpoint by default
+
+- HTTPS is mandatory for SSE-C
+- Encryption in flight is also called SSL/TLS
+
+## S3 Security
+- User based
+	- IAM policies - which API calls should be allowed for a specific from IAM console
+- Resource based
+	- Bucket Policies - bucket wide rules from the S3 console - allows cross account
+	- Object Access Control List (ACL) - finer grain
+	- Bucket Access Control List (ACL) - less common
+- Note: an IAM principial can access an S3 object if
+	- the user IAM permissions allow it **OR** the resource policy ALLOWS it
+	- **AND** there is no explicit DENY
+		- Example: If IAM permissions allow a user but the bucket policy explicit deny an user, the the access will be denied
+### S3 Bucket Policies
+- JSON based policies
+    - Resources: bucket and objects
+	- Actions: Set of API to Allow or Deny
+	- Effect: Allow / Deny
+	- Principal: The account or user to apply the policy to
+	- Example:
+		```javascript
+		{
+			"Version": "2012-10-17",
+			"Statement": [
+				{
+					"Sid": "PublicRead",
+					"Effect": "Allow",
+					"Principal": "*",
+					"Action": [
+						"s3:GetObject"
+					],
+					"Resource": [
+						"arn:aws:s3:::examplebucket/*"
+					]
+				}
+			]
+		}
+		```
+- Use S3 bucket for policy to:
+	- Grant public access to the bucket
+	- Force objects to be encrypted at upload
+	- Grant access to another account (Cross Account)
+
+#### Bucket setttings for Block Public Access
+- Block public access to buckets and objects granted through
+	- new access control list (ACLs)
+	- any access control list (ACLs)
+	- new public bucket or access point policies
+- Block public and cross-account access to buckets and objects through any public bucket or access point policies
+- **These settings were created to prevent company data leaks**
+- If you know your bucket should never be public, leave these on
+- Can be set at the account level
+
+### S3 Security - Other
+- Networking:
+	- Supports VPC Endpoints (for instances in VPC without www internet)
+- Logging and Audit:
+	- S3 Access Logs can be stored in other S3 bucket
+	- API calls can be logged in AWS CloudTrail
+- User Security:
+	- Multi Factor Authentication (MFA) Delete: MFA can be required in versioned buckets to delete objects
+	- Pre-Signed URLs: URLs that are valid only for a limited time (ex.: premium video service for logged in users)
+	
+## S3 Websites
+- S3 can host static websites and have them accesible on the www
+- The website URL will be:
+	- <bucket-name>.s3-website-<AWS-region>.amazonaws.com
+	- <bucket-name>.s3-website.<AWS-region>.amazonaws.com
+- If you get a 403 (Forbidden) error, make sure the bucket policy allows public reads!
+
+## Cross-Origin Resource Sharing (CORS)
+- An origin is a scheme (protocol), host (domain) and port
+	- Ex.: https://www.example.com (implied port is 443 for HTTPS, 80 for HTTP)
+		- protocol: HTTPS, domain: www.example.com, port: 443
+- CORS is a web browser based mechanism to allow requests to other origins while visiting the main origin
+	- Same origin: http://www.example.com/api1 & http://www.example.com/api2
+	- Different origins: http://www.example.com & http://other.example.com
+- The request won't be fulfilled unless the other origin allows for the requests, using CORS Headers (ex.: Access-Control-Allow-Origin)
+
+## Amazon S3 - Consistency Model
+- Amazon S3 is made of different servers, and when a file is uploaded to a server it will be replicated to other servers. This leads to different consistency issues
+- Read after write consistency for PUTS of new objects
+	- As soon as a new object is written, we can retrieve it.
+		- ex: PUT 200 => GET 200
+	- This is true, **except** if we did a GET before to see if the object existed
+		- ex: GET 404 => PUT 200 => GET 404 - eventually consistent
+- Eventual Consistency for DELETES and PUTS of existing objects
+	- If we read an object after updating, we might get the older version
+		- ex: PUT 200 => PUT 200 => GET 200 (might be the older version)
+	- If we delete an object, we might still be able to retrieve it for a short time
+		- ex: DELETE 200 => GET 200
+- Note: There is no way to request _"strong_ _consistency"_
+
+
