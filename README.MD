@@ -9,6 +9,18 @@ One of my new years resolutions was to learn a bit more about the vast world of 
 * SASS
 * Design patterns
 * Amazon Web Services
+* Terraform
 
 ## What is in my willing to learn list ?
 - [ ] Angular/React/Vue
+
+# Certifications
+
+## Currently studying
+- [ ] Linux Essentials
+- [ ] AWS Certified Solutions Architect Associate
+
+## Some certifications I want to have:
+- [ ] Linux LPIC-1
+- [ ] Spring Certified Professional
+- [ ] Oracle Certified Professional Java SE 11 Developer
