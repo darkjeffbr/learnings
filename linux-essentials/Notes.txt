@@ -331,9 +331,31 @@ standard error  : channel 2
 2> redirects the standard error of a command 
 2>> redirects and append the standard error of a command 
 
-it is possible to redirect on stream to another
+it is possible to redirect one stream to another
 
 2>&1 redirects standard error to standard output
+
+&> redictes both standard input and standard output # ls a b c &> output.txt
+
+
+
+
+1>filename
+# Redirect stdout to file "filename"
+
+1>>filename
+# Redirect and append stdout to file "filename"
+
+2>filename
+# Redirect stderr to file "filename"
+
+2>>filename
+# Redirect and append stderr to file "filename"
+
+&>filename
+# Redirect both stdout and stderr to file "filename"
+# This operator is now functional, as of Bash 4, final release.
+
 
 
 !!!!! IMPORTANT !!!!!
@@ -411,6 +433,15 @@ grep -c pattern fileName # count number of matching lines
 grep -i pattern fileName # ignore case
 grep -l pattern fileName # file name only
 
+grep -E '[aeiou]{2,}' filename # search using regular expression for any word that contains at least two consecutive vowel
+
+^ # beginning of the line
+$ # end of the line
+
+grep -E '^A.+\.$' fileName
+grep -E '^[A-L]' fileName
+grep -E '^[^A-L]' fileName # ^ in group [] is a negation (exclusion)
+
 --------------------------------
 
 echo "Current folder `pwd`"  # execute command and replace its result in place
@@ -473,6 +504,9 @@ dig - domain information groper is a flexible tool for interrogating DNS name se
 ifconfig
 host - DNS lookup utility
 
+ip link set eth0 down
+ip addr add 182.168.0.1/24 dev eth0
+
 --------------------------------
 
 useradd -m
@@ -493,6 +527,12 @@ w    -> who is logged on and what they are doing
 last -> who a listing of last logged in users
 su   -> run a command with substitute user and group ID
 sudo -i  --> login 
+
+passwd -> set / change password for a user
+passwd -S username  -> show status of a given account
+
+chage  -> change user password expiry information
+chage -l username -> list password expiry information for a given user
 
 --------------------------------
 
@@ -545,6 +585,8 @@ groupadd # create a new group
 
 usermod # modify a user account
 usermod -a -G groupName userName
+
+groupmod
 
 newgrp # !!!CHANGES!!! (DO NOT ADD) the group identification of the caller user
 
