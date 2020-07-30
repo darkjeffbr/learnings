@@ -941,6 +941,8 @@ aws configure
 - Can generate pre-signed URLs using SDK or CLI
     - For downloads (easy, can use the CLI)
 	- For uploads (harder, must use the SDK)
+	- ***aws s3 presign s3://my-bucket/file.jpg --expires-in 1 --region eu-west-1***
+	- **IMPORTANT!!! Configure the signature algorithm: aws configure set default.s3.signature_version s3v4**
 - Valid for a default of 3600 seconds, can change timeout with --expires-in \[TIME_BY_SECONDS\] argument
 - Users given a pre-signed URL inherit the permissions of the person who generated the URL for GET / PUT
 - Examples:
@@ -1099,3 +1101,119 @@ aws configure
 - Use cases: Business Intelligence / analytics / reporting, analyze & query VPC Flow Logs, ELB Logs, CloudTrail trails, etc ...
 - Exam Tip: Analyze data directly on S3 => use Athena
 
+# AWS CloudFront
+- Content Delivery Network (CDN)
+- Improves read performance, content is cached at the edge
+- 216 point of presence globally (edge locations)
+- DDoS protection, integration with Shield, AWS Web Application Firewall
+- Can expose external HTTPS and can talk to internal HTTPS backends
+- The Amazon CloudFront Global Edge Network: https://aws.amazon.com/cloudfront/features/?nc=sn&loc=2
+
+## CloudFront - Origins
+- S3 bucket
+    - For distributing files and caching them at the edges
+		- Transfer over a private AWS network
+	- Enhanced security with CloudFront **Origin Access Identity (OAI)**
+	    - Bucket policy + OAI (role)
+	- CloudFront can be used as an ingress (to upload files to S3)
+- Custom Origin (HTTP)
+    - Application Load Balancer
+		- ALB must be public
+		- EC2 instances can be private
+		- Security group must allow access from edge location
+	- EC2 instance
+		- Instances must be public
+		- Security groups must allow access from edge location
+	- S3 website (must first enable the bucket as a static s3 website)
+	- Any HTTP backend you want
+
+## CloudFront at a high level
+- There are a bunch of edge location spread all over the world
+- These edge locations are connected to an origin (s3 or any http endpoint)
+- Client make request, it is forwarded to origin (including query strings and request headers)
+- Edge location will cache response
+
+## CloudFront Geo Restriction
+- You can restrict who can access your distribution
+    - Whitelist : Allow your users to access your content only if they're in one of the countries on a list of approved countries
+	- Blacklist : Prevent your users from accessing your content if they're in one of the countries on blacklist of banned countries
+- The "country" is determined using a 3rd part Geo-IP database
+- Use case: Copyright Laws to control access to content
+
+## CloudFront vs S3 Cross Region Replication
+- CloudFront:
+    - Global Edge network
+	- Files are cached for a TTL (maybe a day)
+	- **Great for static content that must be available everywhere**
+
+- S3 Cross Region Replication:
+    - Must be setup for each region you want replication to happen
+	- Files are updated in near real-time
+	- Read only
+	- **Great for dynamic content that needs to be available at low-latency in few regions**
+
+
+## CloudFront Signed URL / Signed Cookies
+- You want to distribute paid shared content to premium users over the world
+- We can use CloudFront Signed URL / Cookie. We attach a policy with:
+    - includes URL expiration
+	- Includes IP ranges to access the data from
+	- Trusted signers (which AWS accounts can create signed URLs)
+- How long should the URL be valid for ?
+    - Shared content (movie, music): make it short (a few minutes)
+	- Private content (private to the user): you can make it last for years
+- Signed URL = access to individual filese (one signed URL per file)
+- Signed Cookies = access to multiple files (one signed cookie for many files)
+
+### CloudFront Signed URL vs S3 Pre-Signed URL
+	- **CloudFront Signed URL:**
+		- Allow access to a path, no matter the origin
+		- Account wide key-pair, only the root can manage it
+		- Can filter by IP, path, date, expiration
+		- Can leverage caching features
+	- **S3 Pre-Signed URL:**
+		- Issue a request as the person who pre-signed the URL
+		- Uses the IAM key of the signing IAM principal
+		- Limited lifetime
+
+# Global Accelerator
+- Background:
+	- You have deployed an application and have global users who want to access it directly.
+	- They go over the public internet, which can add a lot of latency due to many hops
+	- We wish to go as fast as possible through AWS network to minimize latency
+	- Anycast IP: all servers hold the same IP address and the client is routed to the nearest one
+	
+- Global Accelerator uses the concept of Anycast
+- Leverage the AWS internal network to route to your application
+- 2 Anycast IP are created for your application
+- The Anycast IP send traffic directly to Edge Locations
+- The Edge location send the traffic to your application
+
+- Works with Elastic IP, EC2 instances, ALB, NLB, public or private
+- Consistent Performance
+	- Intelligent routing to lowest latency and fast regional failover
+	- No issue with client cache (because the IP doesn't change)
+	- Internal AWS network
+- Health Checks
+	- Global Accelerator performs a health check of your applications
+	- Helps make your application global (failover less than 1 minute for unhealthy)
+	- Great for disaster recovery (thanks to the health checks)
+- Security
+	- only 2 external IP need to be whitelisted
+	- DDoS protection thanks to AWS Shield
+
+## Global Accelerator vs CloudFront
+- They both use the AWS global network and its edge locations around the world
+- Both services integrate with AWS Shield for DDoS protection
+
+- **CloudFront**
+	- Improves performance for both cacheable content (such as images and videos)
+	- Dynamic content (such as API acceleration and dynamic site delivery)
+	- Content is served at the edge
+- **Global Accelerator**
+	- Improves performance for a wide range of applications over TCP or UDP
+	- Proxying packets at the edge to applications running in one or more AWS Regions
+	- Good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice Over IP
+	- Good for HTTP use cases that requires static IP adresses
+	- Good for HTTP use cases that required deterministic, fast regional failover
+	
