@@ -1356,3 +1356,618 @@ aws configure
 - **Storage Gateway:** File Gateway, Volume Gateway (cache & stored), Tape Gateway
 - **Snowball/Snowmobile:** To move large amount of data to the cloud, physically
 - **Database:** For specific workloads, usually with indexing and querying
+
+# Amazon Simple Queue Service (AWS SQS)
+- A message queuing service
+- Amazon SQS provides queues for high-throughput, system-to-system messaging. You can use queues to decouple heavyweight processes and to buffer and batch work. Amazon SQS stores messages until microservices and serverless applications process them.
+
+
+## AWS SQS - Standard Queue
+- Oldest offering (over 10 years old)
+- Fully managed
+- Scales from 1 message per second to 10.000s per second
+- Default retention of messages: 4 days, maximum of 14 days
+- No limit to how many messages can be in the queue
+- Low latency (<10ms on publish and receive)
+- Horizontal scaling in terms of number of consumers/producers
+- Can have duplicate messages (at least once delivery, occasionally)
+- Can have out of order messages (best effort ordering)
+- Limitation of 256KB per message sent
+
+## AWS SQS - Delay Queue
+- Delay a message (consumers don't see it immediately) up to 15 minutes
+- Default is 0 seconds (message is available right away)
+- Can set a default at queue level
+- Can override the default using the **DelaySeconds** parameter
+
+## SQS - Producing Messages
+- Define Body
+	- String
+	- Up to 256kb
+- Add messages attributes (metadata - optional)
+	- Name + Type + Value
+- Provide Delay Delivery (optional)
+
+- Get back
+	- Message identifier
+	- MD5 hash of the body
+	
+
+## SQS - Consuming Messages
+- Consumers will poll SQS for messages (receive up to 10 messages at a time)
+- Process the message within the visibility timeout
+- Delete the message using the message ID & receipt handle
+
+
+## SQS - Visibility timeout
+- When a consumer polls a message from a queue, the message is "invisible" to other consumers for a defined period => the **Visibility Timeout**
+	- Set between 0 seconds and 12 hours (default 30 seconds)
+	- If too high (15 minutes) and consumer fails to process message, you must wait a long time before processing the message again
+	- If too low (30 seconds) consumer needs time to process the message ( example, 2 minutes), another consumer will receive the message and the message will be processed more than once
+- **ChangeMessageVisibility** API to change the visibility while processing a message
+- **DeleteMessage** API to tell SQS the message was successfully processed
+
+## AWS SQS - Dead Letter Queue
+- If a consumer fails to process a message within the Visibility Timeout => message goes back to the queue!
+- We can set a threshold of how many times a message can go back to the queue -> it is called a "redrive policy"
+
+- After the threshold is exceeded, the message goes into a dead letter queue (DLQ)
+- We have to create a DLQ first and then designate it dead letter queue
+- Make sure to process the message in the DLQ before they expire!
+
+## AWS SQS - Long Polling
+- When a consumer requests message from the queue, it can optionally "wait" for messages to arrive if there are none in the queue
+- This is called Long Polling
+- **LongPolling decreases the number of API calls made to SQS while increase the efficiency and latency of your application**
+- The wait time can be between 1 sec to 20 sec (20 sec preferable)
+- Long Polling is preferable to Short Polling
+- Long Polling can be enabled at the queue level or at the API level using **WaitTimeSeconds**
+
+## AWS SQS - FIFO Queue
+- Newer offering (First In - First out) - not available in all regions!
+- Name of the queue must end in .fifo
+- Lower throughput (up to 3000 per second with batching, 300/s without)
+- Messages are processed in order by consumer
+- Messages are sent exactly once
+- No per message delay (only per queue delay)
+
+### Features
+- **Deduplication:** (not send the same message twice)
+	- Provide a **MessageDeduplicationId** with your message
+	- De-duplication interval is 5 minutes
+	- Content based duplication: the MessageDeduplicationId is generated as the SHA-256 of the message body (not the attributes)
+- **Sequencing:**
+	- To ensure strict ordering between messages, specify a **MessageGroupId**
+	- Messages with different Group ID may be received out of order
+	- E.g. to order messages for a user, you could your the "user_id" as a group id
+	- Messages with the same Group ID are delivered to one consumer at a time
+	
+# Amazon Simple Notification Service - SNS
+- Pub/sub messaging for microservices and serverless applications
+- Amazon SNS is a highly available, durable, secure, fully managed pub/sub messaging service that enables you to decouple microservices, distributed systems, and event-driven serverless applications. Amazon SNS provides topics for high-throughput, push-based, many-to-many messaging.
+
+- The "event produce" only sends messages to one SNS topic
+- As many "event receivers" (subscriptions) as we want to listen to the SNS topic notifications
+- Each subscriber to the topic will get all the messages (note: new feature to filter messages)
+- Up to 10.000.000 subscriptions per topic
+- 100.000 topics limit
+- Subscribers can be:
+	- SQS
+	- HTTP / HTTPS (with delivery retries - how many times)
+	- Lambda
+	- Emails
+	- SMS messages
+	- Mobile Notifications
+	
+- Some services can send data directly to SNS for notifications
+	- CloudWatch (for alarms)
+	- AutoScaling Groups notifications
+	- Amazon S3 (on bucket events)
+	- CloudFormation (upon state changes => failed to build, etc)
+	- Etc ...
+	
+## AWS SNS - How to publish
+- Topic Publish (within your AWS Server - using the SDK)
+	- Create a topic
+	- Create a subscription (or many)
+	- Publish to the topic
+- Direct Publish (for mobile apps SDK)
+	- Create a platform application
+	- Create a platform endpoint
+	- Publish to the platform endpoint
+	- Works with Google GCM, Apple APNS, Amazon ADM
+	
+## SNS + SQS: Fan Out
+- Push once in SNS, receive in many SQS
+- Fully decoupled
+- No data loss
+- Ability to add receivers of data later
+- SQS allows for delayed processing
+- SQS allows for retries of work
+- May have many workers on one queue and one worker on the other queue
+
+# AWS Kinesis
+## Overview
+- **Kinesis** is a managed alternative to Apache Kafka
+- Great for application logs, metrics, IoT, clickstreams
+- Great for "real-time" big data
+- Great for streaming processing frameworks (Spark, NiFi, etc ...)
+- Data is automatically replicated to 3 AZ
+
+- **Kinesis Streams:** low latency streaming ingest at scale
+- **Kinesis Analytics:** perform real-time analytics on streams using SQL
+- **Kinesis Firehose:** load streams into S3, Redshift, ElasticSearch
+
+## Kinesis Streams
+- Streams are divided in ordered Shards/Partitions
+- Data retention is 1 day by default, can go up to 7 days
+- Ability to reprocess / replay data
+- Multiple applications can consume the same streaming
+- Real-time processing with scale of throughput
+- Once data is inserted in Kinesis, it can't be deleted (immutability)
+
+### Kinesis Streams Shards
+- One stream is made of many different shards
+- 1MB/s or 1000 messages/s at write PER SHARD
+- 2MB/s at read PER SHARD
+- Billing is per shard provisioned, can have as many shards as you want
+- Batching available or per message calls
+- The number of shards can evolve over time (reshard/merge)
+- **Records are ordered per shard**
+
+### AWS Kinesis API - Put records
+- PutRecord API + Partition key that gets hashed
+- The same key goes to the same partition (helps with ordering for a specific key)
+- Messages sent get a "sequence number"
+- Choose a partition key that is highly distributed (helps prevent "hot partition")
+	- Examples:
+		- user_id if many users
+		- **Not** country_id if 90% of the users are in one country
+- Use Batching with PutRecords to reduce costs and increase throughput
+- **ProvisionedThroughputExceeded** if we go over the limits
+- Can use CLI, AWS SDK, or producer libraries from various frameworks
+
+### AWS Kinesis API - Exceptions
+- ProvisionedThroughputExceeded Exceptions
+	- Happens when sending more data (exceeding MB/s or TPS for any shard)
+	- Make sure you don't have a hot shard (such as your partition key is bad and too much data goes to that partition)
+- Solution:
+	- Retries with backoff
+	- Increase shards (scaling)
+	
+### AWS Kinesis API - Consumers
+- Can use a normal consumer (CLI, SDK, etc...)
+- Can use Kinesis Client Library (KCL) (in Java, Node, Python, Rube, .Net)
+	- KCL uses DynamoDB to checkpoint offsets
+	- KCL uses DynamoDB to track other workers and share the work amongst shards
+	
+## AWS Kinesis Security
+- Control access / authorization using IAM policies
+- Encryption in flight using HTTPS endpoints
+- Encryption at rest using KMS
+- Possibility to encrypt / decrypt data client side (harder)
+- VPC Endpoints available for Kinesis to access within VPC
+
+## AWS Kinesis Data Firehose
+- Fully Managed Service, no administration, automatic scaling, serverless
+- Load data into Redshift / Amazon S3 / ElasticSearch / Splunk
+- **Near Real Time**
+	- 60 seconds latency minimum for non full batches
+	- Or minimum 32 MB of data at a time
+- Supports many data formats, conversions, transformations, compression
+- Pay for the amount of data going through Firehose
+
+
+## Kinesis Data Stream vs Firehose
+- Streams
+	- Going to write custom code (producer/consumer)
+	- Real time (~200ms)
+	- Must manage scaling (shard splitting/merging)
+	- Data Storage for 1 to 7 days, replay capability, multi consumers
+- Firehose
+	- Fully managed, send to S3, Splunk, Redshift, ElasticSearch
+	- Serverless data transformation with Lambda
+	- **Near** real time (lowest buffer time is 1 minute)
+	- Automated Scaling
+	- No data storage
+
+## Kinesis Data Analytics
+- Perform real-time analytics on Kinesis Streams using SQL
+- Kinesis Data Analytics:
+	- Auto Scaling
+	- Managed: no servers to provision
+	- Continuous: real time
+- Pay for actual consumption rate
+- Can create streams out of the real-time queries
+
+
+## Data Ordering for Kinesis vs SQS FIFO
+### Ordering data into Kinesis
+- Imagine you have 100 trucks (truck_1, truck_2, ..., truck_100) on the road sending their GPS positions regularly into AWS
+- You want to consume the data in order for each truck, so that you can track their movement accurately
+- How should you send that data into Kinesis ?
+
+- Answer: send using a "Partition Key" value of the "truck_id"
+- The same key will always go to the same shard
+
+### Ordering data into SQS
+- For SQS standard, there is no ordering
+- For SQS FIFO, if you don't use a Group ID, messager are consumed in the order they are sent, **with only one consumer**
+- You want to scale the number of consumers, but you want messages to be "grouped" whey they are related to each other
+- Then you use a Group ID (similar to Partition Key in Kinesis)
+
+
+### Kinesis vs SQS Ordering
+- Let's assume 100 trucks, 5 kinesis shards, 1 SQS FIFO
+- Kinesis Data Streams
+	- On average you'll have 20 trucks per shard
+	- Trucks will have their data ordered within each shard
+	- The maximum amount of consumers in parellel we can have is 5
+	- Can receive up to 5 MB/s of data
+- SQS FIFO
+	- You only have one SQS FIFO queue
+	- You will have 100 Group ID
+	- You can have up to 100 Consumers (due to the 100 Group ID)
+	- You have up to 300 messages per second (or 3000 if using batching)
+	
+## SQS vs SNS vs Kinesis
+- **SQS:**
+	- Consumer "pull data"
+	- Data is deleted after being consumed
+	- Can have as many workers (consumers) as we want
+	-´No need to provision throughput
+	- No ordering guarantee (except FIFO queues)
+	- Individual message delay capability
+- **SNS:**
+	- Push data to many subscribers
+	- Up to 10.000.000 subscribers
+	- DAta is not persisted (lost if not delivered)
+	- Pub/Sub
+	- Up to 100.000 topics
+	- No need to provision throughput
+	- Integrates with SQS for fan-out architecture patteern
+- **Kinesis:**
+	- Consumers "pull data"
+	- As many consumers as we want
+	- Possibility to replay data
+	- Meant for real-time big data, analytics and ETL
+	- Ordering at the shard level
+	- Data expires after X days
+	- Must provision throughput
+	
+# Amazon MQ
+- SQS, SNS are "cloud-native" services, and they're using proprietary protocols from AWS
+- Traditional applications running from on-premise may use open protocols such as: MQTT, AMQP, STOMP, Openwire, WSS
+- **When migrating to the cloud**, instead of re-engineering the application to use SQS and SNS, we can use Amazon MQ
+- **Amazon MQ = managed Apache ActiveMQ**
+
+- Amazon MQ doesn't "scale" as much as SQS / SNS
+- Amazon MQ runs on a dedicated machine, can run in HA with failover
+- Amazon MQ has both queue feature (~SQS) and topic feature (~SNS)
+
+
+# Serverless for Solution Architect
+## What is Serverless ?
+- Serverless is a new paradigm in which the developers don't have to manage servers anymore ...
+- They just deploy code
+- They just deploy... functions!
+- Initially Serverless = FaaS (Function as a Service)
+- Serverless was pioneered by AWS Lambda but now also includes anything that's managed: "databases, messaging, storage, ect"
+- **Serverless does not mean there are no servers**, it means you just don't manage/provision/see them
+
+### Serverless in AWS
+- AWS Lambda
+- DynamoDB
+- AWS Cognito
+- AWS API Gateway
+- Amazon S3
+- AWS SNS & SQS
+- AWS Kinesis Data Firehose
+- Aurora Serverless
+- Step Functions
+- Fargate
+
+
+# AWS Lambda
+- AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume.
+## Why Lambda ?
+- Using EC2
+	- Virtual Servers in the Cloud
+	- Limited by RAM and CPU
+	- Continuously running
+	- Scaling means intervention to add/remove servers
+- Using Amazon Lambda
+	- Virtual **functions** - no servers to manage!
+	- Limited by time - **short executions**
+	- Run **on-demand**
+	- **Scaling is automated!**
+
+## Benefits of AWS Lambda
+- Easy Princing:
+	- Pay per request and compute time
+	- Free tier of 1.000.000 AWS Lambda requests and 400.000 GBs of compute time
+	
+- Integrated with the whole AWS suite of services
+- Integrated with many programming languages
+- Easy monitoring through AWS CloudWatch
+- Easy to get more resources per functions (up to 3GB of RAM!)
+- Increasing RAM will also improve CPU and network!
+
+## Lambda language support
+- Node.js (Javascript)
+- Python
+- Java (Java 8 compatible)
+- C# (.NET Core)
+- Golang
+- C# / Powershell
+- Ruby
+- Custom Runtime API (community supported, example Rust)
+
+- **Important: Dokcer is not for AWS Lambda, it is for ECS/Fargate**
+
+## AWS Lambda Integrations Main Ones
+- API Gateway
+- Kinesis
+- DynamoDB
+- S3
+- CloudFront
+- CloudWatch Events EventBridge
+- CloudWatch Logs
+- SNS
+- SQS
+- Cognito
+
+## AWS Lambda Princing (examples)
+- You can find overall pricing information: https://aws.amazon.com/lambda/pricing/
+- Pay per **calls**:
+	- First 1.000.000 requests are free
+	- $0,20 per 1 million request thereafter ($0,0000002 per request)
+- Pay per **duration**: (in increment of 100ms)
+	- 400.000 GB-seconds of compute time per month FREE
+	- == 400.000 seconds if function is 1GB RAM
+	- == 3.200.000 seconds if function is 128 MB RAM
+	- After that $1.00 for 600.000GB-seconds
+- It is usually **very cheap** to run AWS Lambda so it's **very popular**
+
+## AWS Lambda Limits to Know - per region
+- Lambda limits are set per region
+
+### Execution
+	- Memory allocation: 128MB - 3008MN (64MN increments)
+	- Maximum execution time: 900 seconds (15 minutes)
+	- Environment variables (4KB)
+	- Disk capacity in the "function container" (in /tmp) : 512MB
+	- Concurrency executions: 1000 (can be increase)
+### Deployment
+	- Lambda function deployment size (compressed .zip): 50MB
+	- Size of uncompressed deployment (code+ dependencies): 250 MB
+	- Can use the /tmp directory to load other files at startup
+	- Size of environment variables: 4KB
+
+## Lambda@Edge
+- You have deployed a CDN using CloudFront
+- What if you wanted to run a global AWS Lambda alongside ?
+- Or how to implement request filtering before reaching your application ?
+
+- For this, you can use **Lambda@Edge** to deploy Lambda functions alongside your CloudFront CDN
+	- Build more responsive applications
+	- You don't manage servers, Lambda is deployed globally
+	- Customize the CDN content
+	- Pay only for what you use
+
+- You can use Lambda to change CloudFront requests and response:
+	- Viewer request: After CloudFront receives a request from a viewer
+	- Origin request: Before CloudFront forwards the request to the origin
+	- Origin response: After CloudFront receives the response from the origin
+	- Viewer response: Before CloudFront forwards the response to the viewer
+- You can also generate responses to viewers without ever sending the request to the origin
+
+### Lambda@Edge: Use cases
+- Website Security and Privacy
+- Dynamic Web Application at the Edge
+- Search Engine Optimization (SEO)
+- Intelligently Route Across Origins and Data Centers
+- Bot Mitigation at the Edge
+- Real-time Image Transformation
+- A/B testing
+- User Authentication and Authorization
+- User Prioritization
+- User Tracking and Analytics
+
+# DynamoDB
+- Fully Managed, Highly available with replication across 3 AZ
+- NoSQL database - not a relational database
+- Scales to massive workloads, distributed database
+- Millions of requests per seconds, trillions or row, 100s of TB of storage
+- Fast and consistent in performance (low latency on retrieval)
+- Integrated with IAM for security, authorization and administration
+- Enables event driven programming with DynamoDB Streams
+- Low cost and auto scalling capabilities
+
+## DynamoDB - Basics
+- DynamoDB is made of **tables**
+- Each table has a **primary key** (must be decided at creation time)
+- Each table can have an infinite number of items (=rows)
+- Each item has **attributes** (can be added over time - can be null)
+- Maximum size of a item is 400KB
+- Data type supported are:
+	- Scalar Types: String, Number, Binary, Boolean, Null
+	- Document Types: List, Map
+	- Set Types: String Set, Number Set, Binary Set
+	
+## DynamoDB - Provisioned Throughput
+- Table must have provisioned read and write capacity units
+- **Read Capacity Units (RCU)**: throughput for reads ($0.00013 per RCU)
+	- 1 RCU = 1 strongly consistent read of 4 KB per second
+	- 1 RCU = 2 eventually consistent read of 4 KB per second
+- **Write Capacity Units (WCU)**: throughput for writes ($0.00065 per WCU)
+	- 1 WCU = 1 write of 1 KB per second
+- Option to setup auto-scaling of throughput to meet demand
+- Throughput can be exceeded temporarily using "burst credit"
+- If burst credit are empty, you'll get a "ProvisionedThroughputException"
+- It's then advised to do an exponential back-off retry
+
+## DynamoDB Advanced Features
+### DynamoDB Accelerator
+- DAX -> DynamoDB Accelerator
+- Seamless cache for DynamoDB, no application re-write
+- Writes go through DAX to DynamoDB
+- Micro second latency for cached reads & queries
+- Solves the Hot Key problem (too many reads)
+- 5 minutes TTL for cache by default
+- Up to 10 nodes in the cluester
+- Multi AZ (3 nodes minimum recommended for production)
+- Secure (Encryption at rest with KMS, VPC, IAM, CloudTrail ...)
+
+### DynamoDB Streams
+- Changes in DynamoDB (Create, Update, Delete) can end up in a DynamoDB Stream
+- This stream can be read by AWS Lambda, and we can then do:
+	- React to changes in real time (welcome email to new users)
+	- Analytics
+	- Create derivative tables/views
+	- Insert into ElasticSearch
+- Could implement cross region replication using Streams
+- Streams has 24 hours of data retention
+
+### DynamoDB - New Features
+- **Transactions (new from Nov 2018)**
+	- All or nothing type of operations
+	- Coordinated Insert, Update & Delete across multiple tables
+	- Include up to 10 unique items or up to 4 MB of data
+	
+- **On Demand (new from Nov 2018)**
+	- No capacity planning needed (WCU/RCU) - scales automatically
+	- 2.5x more expensive than provisioned capacity (use with care)
+	- Helpful when spikes are un-predictable or the application is very low throughput
+	
+### DynamoDB - Security & Other Features
+- Security:
+	- VPC Endpoints available to access DynamoDB without internet
+	- Access fully controlled by IAM
+	- Encryption at rest using KMS
+	- Encryption in transit using SSL / TLS
+- Backup and Restore feature available
+	- Point in time restore like RDS
+	- No performance impact
+- Global Tables (cross region replication)
+	- Multi region, fully replicated, high performance
+	- Active Active replication, many regions
+	- Must enable DynamoDB Streams
+	- Useful for low latency, DR purposes
+- Amazon DMS can be used to migrate to DynamoDB (from Mongo, Oracle, MySQL, S3, etc ...)
+- You can launch a local DynamoDB on your computer for development purposes
+- Capacity planning:
+	- Planned capacity: provision WCU & RCU, can enable auto scaling
+	- On-demand capacity: get unlimited WCU & RCU, no throttle, more expensive
+	
+# AWS API Gateway
+- Amazon API Gateway is a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale. APIs act as the "front door" for applications to access data, business logic, or functionality from your backend services
+
+## Overview
+- AWS Lambda + API Gateway: No infrastructure to manage
+- Support for the WebSocket Protocol 
+- Handle API versioning (v1, v2, ...)
+- Handle different environments (dev, test, prod, ...)
+- Handle security (Authentication and Authorization)
+- Create API keys, handle request throttling
+- Swagger/OpenAPI import to quickly define APIs
+- Transform and validate requests and responses
+- Generate SDK and API specifications
+- Cache API responses
+
+## Integration High Level
+- **Lambda Function**
+	- Invoke Lambda function
+	- Easy way to expose REST API backed by AWS Lambda
+- **HTTP**
+	- Expose HTTP endpoints in the backend
+	- Example: internal HTTP API on-premise, Application Load Balancer
+	- Why? Add rate limiting, caching, user authentications, API keys, etc
+- **AWS Service**
+	- Expose any AWS API through API Gateway?
+	- Example: start an AWS Step Function workflow, post a message to SQS
+	- Why? Add authentication, deploy publicly, rate control...
+	
+## Endpoint Types
+- **Edge-Optimized (default)**: For global clients
+	- Requests are routed through the CloudFront Edge locations (improves latency)
+	- The API Gateway still lives in only one region
+- **Regional**
+	- For clients within the same region
+	- Could manually combine with CloudFront (more control over the caching strategy and the distribution)
+- **Private**
+	- Can only be accessed from your VPC using an interface VPC endpoint (ENI)
+	- Use a resource policy to define access
+	
+## Security
+- **IAM Permissions**
+	- Create an IAM policy authorization and attach to User/Role
+	- API Gateway verifies IAM permissions passed by the calling application
+	- Good to provide access within your own infrastructure
+	- Leverages "Sig v4" capability where IAM credential are in headers
+	- **Summary**
+		- Great for users / roles already within your AWS
+		- Handle authentication + authorization
+		- Leverages Sig v4
+- **Lambda Authorizer (formerly Custom Authorizers)**
+	- Uses AWS Lambda to validate the token in header being passed
+	- Option to cache result of authentication
+	- Helps to use OAuth/SAML/3rd party type of authentication
+	- Lambda must return an IAM policy for the user
+	- **Summary**
+		- Great for 3rd party tokens
+		- Very flexible in terms of what IAM policy is returned
+		- Handle Authentication + Authorization
+		- Pay per Lambda invocation
+- **Cognito User Pools**
+	- Cognito fully manages user lifecycle
+	- API gateway verifies identity automatically from AWS Cognito
+	- No custom implementation required
+	- *Cognito only helps with authentication, not authorization*
+	- **Summary**
+		- You manage your own user pool (can be backed by Facebook, Google login, etc ...)
+		- No need to write any custom code
+		- Must implement authorization in backend
+
+# Amazon Cognito
+- Simple and Secure User Sign-Up, Sign-In, and Access Control
+
+- We want to give our users an identity so that they can interact with our application
+- **Cognito User Pools**
+	- Sign in functionality for app users
+	- Integrate with API Gateway
+- **Cognito Identity Pools (Federated Identity)**
+	- Provide AWS credentials to users so they can access AWS resources directly
+	- Integrate with Cognito User Pools as an identity provider
+- **Cognito Sync**
+	- Synchronize data from device to Cognito
+	- May be deprecated and replaced by AppSync
+
+## Cognito User Pools (CUP)
+- Create a serverless database of user for your mobile apps
+- Simple login: Username (or email) / password combination
+- Possibility to verify emails / phone numbers and add MFA
+- Can enable Federated Identities (Facebook, Google, SAML, ...)
+- Sends back a JSON Web Token (JWT)
+- **Can be integrated with API Gateway for authentication**
+
+## Cognito Federated Identity Pools
+- **Goal**
+	- Provide direct access to AWS Resources from the Client Side
+- **How**
+	- Log in to federated identity provider - or remain anonymous
+	- Get temporary AWS credentials back from the Federated Identit Pool
+	- These credentials come with a pre-defined IAM policy stating their permissions
+- **Example**
+	- Provide (temporary) access to write to S3 bucket using Facebook Login
+
+# Serverless Application Model - SAM
+- Framework for developing and deploying serverless applications
+- All the configuration is YAML code
+	- Lambda Functions
+	- DynamoDB tables
+	- API Gateway
+	- Cognito User Pools
+- SAM can help you to run Lambda, API Gateway, DynamoDB locally
+- SAM can use CodeDeploy to deploy Lambda functions
+
