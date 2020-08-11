@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  main-service:
+    container_name: main-service
+    image: main-service:latest
+    environment:
+      SECONDARY_SERVICE_CALL: 'true'
+      SECONDARY_SERVICE_URL: http://secondary-service:8080/
+    ports:
+      - "8081:8080"
+  secondary-service:
+    container_name: secondary-service
+    image: secondary-service:latest
+    ports:
+      - "8082:8080"
