@@ -14,10 +14,15 @@ import org.springframework.web.client.RestTemplate;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @SpringBootApplication
 @RestController
 @RequestMapping("/api/main")
 public class MainServiceApplication {
+	
+	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSSSSS");
 
 	private RestTemplate restTemplate;
 
@@ -38,13 +43,14 @@ public class MainServiceApplication {
 
 	@GetMapping
 	public String getMainInfo() {
-		return "MAIN SERVICE [ " + getHostInfo() + " ]" + getSecondaryServiceInfo();
+		return getTimeInfo() + "   MAIN SERVICE [ " + getHostInfo() + " ]" + getSecondaryServiceInfo();
 	}
 
 	private String getSecondaryServiceInfo() {
 		if(secondaryServiceCall){
 			try {
-				return " - " + restTemplate.getForObject(secondaryServiceUrl + "/api/secondary", String.class);
+				String url = secondaryServiceUrl + "/api/secondary";
+				return " - " + restTemplate.getForObject(url, String.class);
 			} catch (RestClientResponseException e){
 				return " - ERROR CALLING SECONDARY SERVICE [" + e.getRawStatusCode() +"]";
 			}
@@ -58,6 +64,10 @@ public class MainServiceApplication {
 		} catch (UnknownHostException e) {
 			return "unknown host info";
 		}
+	}
+	
+	private String getTimeInfo(){
+		return simpleDateFormat.format(new Date());
 	}
 
 }

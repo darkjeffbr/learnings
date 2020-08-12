@@ -6,7 +6,7 @@ services:
     image: main-service:latest
     environment:
       SECONDARY_SERVICE_CALL: 'true'
-      SECONDARY_SERVICE_URL: http://secondary-service:8080/
+      SECONDARY_SERVICE_URL: http://secondary-service:8080
     ports:
       - "8081:8080"
   secondary-service:
