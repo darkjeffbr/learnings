@@ -2347,3 +2347,391 @@ aws configure
 - CloudTrail
 	- Track **who** made any changes to the Load Balancer with API calls
 
+# AWS Security Token Service (STS)
+
+- **Allows to grant limited and temporary access to AWS resources**
+- Token is valid for up to one hour (must be refreshed)
+- **AssumeRole**
+	- Within your own account: for enhanced security
+	- Cross Account Access: assume role in target account to perform actions there
+- **AssumeRoleWithSAML**
+	- return credentials for users logged with SAML
+- **AssumeRoleWithWebIdentity**
+	- return creds for users logged with an IdP (Facebook Login, Google Login, OIDC compatible...)
+	- AWS recommends against using this, and using **Cognito** instead
+- **GetSessionToken**
+	- for MFA, from a user or AWS account root user
+
+## Using STS to Assume a Role
+- Define an IAM Role within your account or cross-account
+- Define which principals can access this IAM Role
+- Use AWS STS (Security Token Service) to retrieve credentials and impersonate the IAM Role your have access to (**AssumeRole API**)
+- Temporary credentials can be valid between 15 minutes to 1 hour
+
+# Identity Federation in AWS
+- Federation lets users outside of AWS to assume temporary role for accessing AWS resources
+- These users assume identity provided access role
+
+- Federations can have many flavors:
+	- SAML 2.0
+	- Custom Identity Broker
+	- Web Identity Federation with Amazon Cognito
+	- Web Identity Federation without Amazon Cognito
+	- Single Sign On
+	- Non-SAML with AWS Microsoft AD
+- **Using federation, you don't need to create IAM users (user management is outside of AWS)
+
+## SAML 2.0 Federation
+- To integrate Active Directory / ADFS with AWS (or any SAML 2.0)
+- Provides access to AWS Console or CLI (through temporary creds)
+- No need to create an IAM user for each of your employees
+	- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html
+	- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_enable-console-saml.html
+	
+## SAML 2.0 Federation - Active Directoy FS
+- Same process as with any SAML 2.0 compatible IdP
+	- https://aws.amazon.com/blogs/security/aws-federated-authentication-with-active-directory-federation-services-ad-fs
+
+## SAML 2.0 Federation
+- Needs to setup a trust between AWS IAM and SAML (both ways)
+- SAML 2.0 enables web-based, cross domain SS0
+- Uses the STS API: AssumeRoleWithSAML
+
+- Note federation through SAML is the "old way" of doing things
+- **Amazon Single Sign On (SSO)** Federation is the new managed and simpler way
+	- https://aws.amazon.com/blogs/security/enabling-federation-to-aws-using-windows-active-directory-adfs-and-saml-2-0/
+	
+## Custom Identity Broker Application
+- Use only if identity provider is not compatible with SAML 2.0
+- **The identity broker must determine the appropriate IAM policy**
+- Uses the STS API: **AssumeROle** or **GetFederationToken**
+	- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_federated-users.html
+	
+## Web Identity Federation - AssumeRoleWithWebIdentity
+- Not recommended by AWS - use Cognito instead (allows for anonymous users, data synchronization, MFA)
+	- https://docs.amazonaws.cn/en_us/amazondynamodb/latest/developerguide/WIF.html
+	
+## AWS Cognito
+- **Goal:**
+	- Provide direct access to AWS Resources from the Client Side (mobile, web app)
+- **Example:**
+	- provide (temporary) access to write to S3 bucket using Facebook login
+- **Problem:**
+	- We don't want to create IAM users for our app users
+- **How:**
+	- Log in to federated identity provider - or remain anonymous
+	- Get temporary AWS credentials back from the Federated Identity Pool
+	- These credentials come with a pre-defined IAM policy stating their permissions
+	
+# Directory Services
+## What is Microsoft Active Directoy (AD) ?
+- Found on any Windows Server with AD Domain Services
+- Database of **objects**: User, Accounts, Computers, Printers, File Shares, Security Groups
+- Centralized security management, create account, assign permissions
+- Objects are organized in **trees**
+- A group of trees is a **forest**
+
+## AWS Directory Services
+- **AWS Managed Microsoft AD**
+	- Create your own AD in AWS, manage users locally, supports MFA
+	- Establish "trust" connections with your on-premise AD
+- **AD Connector**
+	- Directory Gateway (proxy) to redirect to on-premise AD
+	- Users are managed on the on-premise AD
+- **Simple AD**
+	- AD-compatible managed directory on AWS
+	- Cannot be joined with on-premise AD
+
+# AWS Organizations
+- Global Service
+- Allows to manage multiple AWS accounts
+- Te main account is the master account - you can't change it
+- Other accounts are member accounts
+- Member account an only be part of one organization
+- Consolidated Billing across all accounts - single payment method
+- Princing benefits from aggregated usage (volume discont for EC2, S3, ...)
+- API is available to automate AWS account creation
+
+## Multi Account Strategies
+- Create accounts per **department**, per **cost center**, per **dev/test/prod**, based on **regulatory restrictions** (using SCP), for **better resource isoloation** (ex.: VPC), to have **separated per-account service limits**, isolated account for **logging**
+
+- Multi Account vs One Account Multi VPC
+- Use tagging standards for billing purposes
+- Enable CloudTrail on all accounts, send logs to central S3 account
+- Send CloudWatch Logs to central logging account
+- Establish Cross Account Roles for Admin purposes
+
+## Organization Units (OU)
+- Used to group accounts
+- https://aws.amazon.com/answers/account-management/aws-multi-account-billing-strategy
+
+## Service Control Policies (SCP)
+- Whitelist or blacklist IAM actions
+- Applied at the **OU** or **Account** level
+- Does not apply to the Master Account
+- SCP is applied to all the **Users and Roles** of the Account, including Root
+- The SCP does not affect service-linked roles
+	- Service-linked roles enable other AWS services to integrate with AWS Organizations and can't be restricted by SCPs
+- SCP must have an explicit Allow (does not allow anything by default)
+- Use cases:
+	- Restrict access to certain services (for example: can't use EMR)
+	- Enforce PCI compliance by explicity disabling services
+
+## AWS Organization - Moving Accounts
+**To migrate accounts from one organization to another**
+1. Remove the member account from the old organization
+2. Send an invite to the new organization
+3. Accept the invite to the new organization from the member account
+
+**If you want the master account of the old organization to also join the new organization, do the following:**
+1. Remove the members account from the organizations using procedure above
+2. Delete the old organization
+3. Repeat the process above to invite the old master account to the new organization
+
+# IAM Advanced
+
+## Conditions
+- The **Condition** element/block lets you spcify conditions for when a policy is in effect
+	- TO REMEMBER:
+		- **aws:SourceIP**: restrict the client IP **from** which the API calls are being made
+		- **aws:RequestedRegion**: restrict the region the API calls are made **to**
+
+## IAM for S3
+- ListBucket permission applies to arn:aws:s3:::test
+	- **bucket level permission**
+- GetObject, PutObject, DeleteObject applies to arn:aws:s3:::test/*
+	- **object level permission**
+
+## IAM Roles vs Resource Based Policies
+- When you assume a role (user, application or service), you give up your original permissions and take the permissions assigned to the role
+- When using a resource based policy, the principal doesn't have to give up his permissions
+- Example: User in account A needs to scan a DynamoDB table in AccountA and dump it in an S3 bucket in AccountB
+	- **Resource based policy**
+- Resource based policies are supported by: Amazon S3 bucket, SNS topics, SQS queues
+
+## IAM Permission Boundaries
+- IAM Permission Boundaries are supported for users and roles (not groups)
+- Advanced feature to use a managed policy to set the maximum permissions an IAM entity can get
+- Can be used in combinations of AWS Organizations SCP
+	- https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
+- **Use cases:**
+	- Delegate responsibilities to non administrators within their permission boundaries, for example create new IAM users
+	- Allow developers to self-assign policies and manage their own permissions, while making sure they can't "escalate" their privileges (=make themselves admin)
+	- Useful to restrict one specific user (instead of a whole account using Organizations & SCP)
+	
+# AWS Resource Access Manager (RAM)
+- Share AWS resource that you own with other AWS accounts
+- Share with any account or within your Organization
+- Avoid resource duplication!
+- **VPC Subnets:**
+	- allow to have all the resources launched in the same subnets
+	- must be from the same AWS Organizations
+	- cannot share security groups and default VPC
+	- participants can manage their own resources in there
+	- participants can't view, modify, delete resources that belong to other participants or the owner
+- **AWS Transit Gateway**
+- **Route53 Resolver Rules**
+- **License Manager Configurations**
+
+# AWS Single Sign-On (SSO)
+- Centrally manage Single Sign-On to access **multiple accounts** and **3rd-party business applications**.
+- Integrated with **AWS Organizatios**
+- **Supports SAML 2.0**
+- Integration with on-premise **Active Directory**
+- Centralized permission management
+- Centralized auditing with CloudTrail
+
+# AWS Security & Encryption
+## Encryption in flight (SSL)
+- Data is encrypted before sending and decrypted after receiving
+- SSL certificates help with encryption (HTTPS)
+- Encryption in flight ensured no MITM (man in the middle attack) can happen
+## Server side encryption at rest
+- Data is encrypted after being received by the server
+- Data is decrypted before being sent
+- It is stored in an encrypted form thanks to a key (usually a data key)
+- The encryption/decryption keys must be managed somewhere and the server must have access to it
+## Client side encryption
+- Data is encrypted by the client and never decrypted by the server
+- Data will be decrypted by a receiving client
+- The server should not be able to decrypt the data
+- Could leverage Envelope Encryption
+
+## AWS Key Management Service (KMS)
+- Anytime you hear "encryption" for an AWS service, it's most likely KMS
+- Easy way to control access to your data, AWS manages keys for us
+- Fully integrated with IAM for authorization
+- Seamlessly integrated into:
+	- Amazon EBS: encrypt volumes
+	- Amazon S3: server side encryption for objects
+	- Amazon Redshift: encryption of data
+	- Amazon RDS: encryption of data
+	- Amazon SSM: Parameter store
+	- Etc ...
+### KMS - Customer Master Key (CMK) Types
+- ** KMS Keys are bond to a specific region**
+- **Symmetric (AES-256 keys)**
+	- First offering of KMS, single encryption key that is used to Encrypt and Decrypt
+	- AWS services that are integrated with KMS use Symmetric CMKs
+	- Necessary for envelope encryption
+	- You never get access to the Key unencrypted (must call KMS API to use)
+- **Asymmetric (RSA & ECC key pair)**
+	- Public (Encrypt) and Private Key (Decrypt) pair
+	- Used for Encrypt/Decrypt, or Sign/Verify operations
+	- The public key is downloadable, but you access the Private Key unencrypted
+	- Use case: encryption outside of AWS 
+	
+#### KMS - Symmetric Keys
+- Able to fully manage the keys & policies
+	- Create
+	- Rotation policies
+	- Disable
+	- Enable
+- Able to audit key usage (using CloudTrail)
+- Three types of Customer Master Keys (CMK)
+	- AWS Managed Service Default CMK: **free**
+	- User keys created in KMS: **$1/month**
+	- User keys imported (must be 256-bit symmetric key): **$1/month**
+- + pay for API call to KMS ($0,03/10000 calls)
+
+### When to use KMS ?
+- Anytime you need to share sensitive information... use KMS
+	- Database passwords
+	- Credentials to external service
+	- Private key of SSL certificates
+- The value in KMS is that the CMK used to encrypt data can never be retrieved by the user, and CMK can be rotated for extra security
+
+- **Never ever store your secrets in plaintext, especially in your code!**
+- Encrypted secrets can be sotred in the code / environment variables
+- **KMS can only help in encrypting up to 4KB of dta per call**
+	- If data > 4KB, use envelope encryption
+- To give access to KMS to someone:
+	- Make sure the Key Policy allows the user
+	- Make sure the IAM Policy allows the API calls
+
+### Copying snapshots across regions
+- Since keys are bond to a specific region, in order to copy snapshots to other regions
+	1. Create snapshot
+	2. Copy snapshot to another region re-encrypting with a KMS key in that region
+### Copying snapshots across accounts
+1. Create snapshot, encrypted with your own CMK
+2. **Attach a KMS key policy to authorize cross-account access**
+3. Share the encrypted snapshot
+4. (in target) Create a copy of the snapshot, encrypt it with a KMS Key in your account
+5. Create a volume from the snapshot
+### KMS Key Policies
+- Control access to KMS keys, "similar" to S3 bucket policies
+- Difference: you cannot control access without them
+- **Default KMS key policy:**
+	- Created if you don't provide a specific KMS Key Policy
+	- Complete access to the key to the root user = entire AWS account
+	- Gives access to the IAM policies to the KMS key
+- **Custom KMS Key Policy:**
+	- Define users, roles that can access the KMS key
+	- Define who can administer the key
+	- Useful for cross-account access of your KMS key
+
+## SSM Parameter Store
+- Secure storage for configuration and secrets
+- Optional Seamless Encryption using KMS
+- Serverless, scalable, durable, easy SDK
+- Version tracking of configurations/secrets
+- Configuration management using path & IAM
+- Notifications with CloudWatch Events
+- Integration with CloudFormation
+
+- Parameter name must be a fully qualified name ( starting with / )
+
+### Parameters Policies (for advanced parameters)
+- Allow to assing a TTL to a parameter (expiration date) to force updating or deleting sensitive data such as passwords
+- Can assign multiple policies at a time
+
+## AWS Secrets Manager
+- Newer service, meant for storing secrets
+- Capability to force **rotation of secrets** every X days
+- Automate generation of secrets on rotation (uses Lambda)
+- Integration with **Amazon RDS** (MySQL, PostgreSQL, Aurora)
+- Secrets are encrypted using KMS
+
+- Mostly meant for RDS integration
+
+## CloudHSM (Hardware Security Module)
+- KSM => AWS manages the software for encryption
+- CloudHSM => AWS provisions encryption **hardware**
+- Dedicated Hardware (HSM = Hardware Security Module)
+- You manage your own encryption keys entirely (not AWS)
+- HSM device is tamper resistant, FIPS 140-2 Level 3 compliance
+- **CloudHSM cluster are spread across Multi AZ (HA) - must setup**
+- Supports both symmetric and **assymetric** encryption (SSL/TLS keys)
+- No free tier available
+- Must use the CloudHSM Client Software
+- Redshift supports CloudHSM for database encryption and key management
+- Good option to use with SSE-C encryption
+
+- **IAM permissions:**
+	- CRUD an HSM Cluster
+- **CloudHSM Software:**
+	- Manage the Keys
+	- Manage the Users
+
+## AWS Shield
+- **AWS Shield Standard:**
+	- Free service that is activated for every AWS customer
+	- Provides protection from attacks such as SYN/UPD Floods, Reflection attack and other layer 3 / layer 4 attacks
+- **AWS Shield Advanced:**
+	- Optional DDoS mitigation service ($3.000 per month per organization)
+	- Protect against more sophisticated attack on *** Amazon EC2, Elastic Load Balancing (ELB), Amazon CloudFront, AWS Global Accelerator and Route53 ***
+	- 24/7 access to AWS DDoS response team (DRP)
+	- Protect against higher fees during usage spikes due to DDoS
+	
+## AWS Web Application Firewall - WAF
+- Protects your web applications from common web exploits (Layer 7)
+- **Layer 7 is HTTP** (vs Layer 4 is TCP)
+- Deploy on **Application Load Balancer, API Gateway, CloudFront**
+
+- Define Web Access Control List (ACL):
+	- Rules can include: Ip addresses, HTTP headers, HTTP body, or URI strings
+	- Protects from common attack - SQL injection and Cross-Site Scripting (XSS)
+	- Size constraints, geo-match (block countries)
+	- Rate-based rules (to count occurrences of events) - for DDoS protection
+	
+## AWS Firewall Manager
+- Manage rules in all accounts of an AWS Organization
+- Common set of security rules
+- WAF rules (Application Load Balancer, API Gateways, CloudFront)
+- AWS Shield Advanced (ALB, CLB, Elastic IP, CloudFront)
+- Security Groups for EC2 and ENI resources in VPC
+
+- Sample Reference Architecture for DDoS Protection
+	- https://aws.amazon.com/answers/networking/aws-ddos-attack-mitigation/
+	
+## Shared Responsibility Model
+- **AWS responsibility - Security OF the Cloud**
+	- Protecting infrastructure (hardware, software, facilities, and networking) that runs all of the AWS services
+	- Managed services like S3, DynamoDB, RDS etc
+- **Customer responsibility - Security IN the Cloud**
+	- For EC2 instance, customer is responsible for management of the guest OS (including security patches and updates), firewall & network configuration, IAM, etc
+### Examples
+#### RDS
+- AWS responsibility:
+	- Manage the underlying EC2 instance, disable SSH access
+	- Automated DB patching
+	- Automated OS patching
+	- Audit the underlyng instance and disks & guarantee it functions
+- Your responsibility:
+	- Check the ports / IP / security group inbound rules in DB's SG
+	- In-database user creation and permissions
+	- Creating a database with or without public access
+	- Ensure parameter groups or DB is configured to only allow SSL connections
+	- Database encryption settings
+#### S3 
+- AWS responsibility:
+	- Guarantee you get unlimited storage
+	- Guarantee you get encryption
+	- Ensure separation of the data between different customers
+	- Ensure AWS employees can't access your data
+- Your responsibility:
+	- Bucket configuration
+	- Bucket policy / public setting
+	- IAM user and roles
+	- Enabling encryption
