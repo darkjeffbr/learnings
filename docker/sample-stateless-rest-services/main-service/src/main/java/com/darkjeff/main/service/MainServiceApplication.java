@@ -3,23 +3,21 @@ package com.darkjeff.main.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestOperationsExtensionsKt;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/api/main")
+@RequestMapping("/")
 public class MainServiceApplication {
 	
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSSSSS");
@@ -41,7 +39,12 @@ public class MainServiceApplication {
 
 	}
 
-	@GetMapping
+    @GetMapping("/health")
+    public ResponseEntity<Void> health(){
+        return ResponseEntity.ok().build();
+    }
+
+	@GetMapping("/api/main")
 	public String getMainInfo() {
 		return getTimeInfo() + "   MAIN SERVICE [ " + getHostInfo() + " ]" + getSecondaryServiceInfo();
 	}
