@@ -16,8 +16,8 @@ public class Client {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
-    private static String PWD = "123456";
-    private static String TST_LOCATION = "./ssl-client-custom-cert/client.jks";
+    private static String PWD = "password";
+    private static String TST_LOCATION = "./ssl-client-custom-cert/truststore.jks";
 
     private HttpsURLConnection connection;
 

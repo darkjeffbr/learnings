@@ -15,7 +15,7 @@ public class Server {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
-    private static String SERVER_PWD = "123456";
+    private static String SERVER_PWD = "password";
     private static String KST_LOCATION = "./ssl-server-custom-cert/server.jks";
 
     private HttpsServer httpsServer;
