@@ -1,0 +1,10 @@
+/**
+ * Simple task.
+ * Print a message to the output
+ */
+task hello {
+    doLast {
+        //Print hello gradle
+        println 'Hello Gradle'
+    }
+}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+        targetNamespace="http://www.darkjeff.com/jaxb/model/animal" attributeFormDefault="qualified"
+        xmlns:ns="http://www.darkjeff.com/jaxb/model/animal">
+
+  <xs:complexType abstract="true" name="animal">
+    <xs:sequence>
+      <xs:element name="gender" type="ns:gender"/>
+      <xs:element name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="cat">
+    <xs:complexContent>
+      <xs:extension base="ns:animal">
+        <xs:sequence>
+          <xs:element name="furColor" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dog">
+    <xs:complexContent>
+      <xs:extension base="ns:animal">
+        <xs:sequence>
+          <xs:element name="age" type="xs:int"/>
+          <xs:element name="owner" type="ns:owner"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="owner">
+    <xs:sequence>
+      <xs:element name="address" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="gender">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MALE"/>
+      <xs:enumeration value="FEMALE"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
