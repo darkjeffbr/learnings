@@ -11,7 +11,7 @@ export class PhotoService {
     getCatPhotos(amount:number): Observable<Photo[]> {
         let photos:Photo[] = [];
         for(let i = 0; i<amount; i++){
-            this.http.get<Object>('https://aws.random.cat/meow').subscribe(data => {
+            this.http.get<any>('https://aws.random.cat/meow').subscribe(data => {
                 photos.push({
                     url: data.file,
                     description: `cat {i}`
