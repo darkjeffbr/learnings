@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <style>
+            table {
+                border-collapse: collapse;
+                border: 1px solid #000;
+            }
+
+            td {
+                width: 50px;
+                height: 50px;
+                border: 1px solid #000;
+                text-align: center;
+                vertical-align: center;
+                font-family: monospace;
+                font-size: 18px;
+                position: relative;
+            }
+
+            .pixel-index {
+                font-size: 10px;
+                display: inline-block;
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                color: #999;
+            }
+
+            td.pixel {
+                width: 4px;
+                height: 4px;
+                border: 0;
+            }
+
+        </style>
+    </head>
+    <body>
+        <form>
+            <input type="radio" name="wind-direction" value="l">Left</inut>
+            <input type="radio" name="wind-direction" value="r" checked>Right</inut>
+            <input type="range" min="1" max="15" step="0.5" value="4">
+        </form>
+        <div id="fireCanvas"></div>
+        <script src="script.js"></script>
+    </body>
+</html>
