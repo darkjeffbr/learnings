@@ -13,6 +13,7 @@ And I also want to learn/play with other cool things.
 * Amazon Web Services
 * Terraform
 * Gradle Build Tool
+* Typescript
 
 ## What is in my willing to learn list ?
 - [ ] Angular/React/Vue
@@ -21,9 +22,9 @@ And I also want to learn/play with other cool things.
 
 ## Currently studying
 - [ ] AWS Certified Developer Associate
+- [ ] Linux LPIC-1
 
 ## Some certifications I want to have:
-- [ ] Linux LPIC-1
 - [ ] Spring Certified Professional
 - [ ] Oracle Certified Professional Java SE 11 Developer
 
