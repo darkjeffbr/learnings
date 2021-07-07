@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es2018"
+        ],
+        "target": "es2018",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "outDir": "dist"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
