@@ -13,11 +13,9 @@ import * as routes from "./routes";
 routes.register(app);
 */
 
-import { Request, Response, Router } from "express";
-import  * as AppointmentController from "./controller/appointment-controller";
+import { Router } from "express";
+import { routes as AppointmentRoutes } from "./appointment/routes";
 
 export const routes: Router = Router();
 
-routes.get('/', (req: Request, res: Response) => {
-    AppointmentController.getAll(req, res);
-});
+routes.use('/appointments', AppointmentRoutes);
