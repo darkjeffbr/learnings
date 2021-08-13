@@ -16,7 +16,7 @@ resource "null_resource" "docker_vol" {
 }
 
 resource "random_string" "random" {
-  count = var.container_count
+  count = local.container_count
   length = 4
   special = false
   upper = false
@@ -27,15 +27,15 @@ resource "docker_image" "nodered_image" {
 }
 
 resource "docker_container" "nodered_container" {
-  count = var.container_count
+  count = local.container_count
   name  = join("-", ["nodered", random_string.random[count.index].result])
   image = docker_image.nodered_image.latest
   ports {
     internal = var.int_port
-    external = var.ext_port
+    external = var.ext_port[count.index]
   }
-  volumes {
-    container_path = "/data"
-    host_path = "/home/ubuntu/noderedvol"
-  }
+  #volumes {
+  #  container_path = "/data"
+  #  host_path = "/home/ubuntu/noderedvol"
+  #}
 }
