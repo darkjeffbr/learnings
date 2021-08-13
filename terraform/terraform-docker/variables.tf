@@ -22,4 +22,6 @@ variable "ext_port" {
     error_message = "The external port must be in the valid port range 0-65535!"
   }
 
+  sensitive = true
+
 }
