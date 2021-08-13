@@ -34,8 +34,8 @@ resource "docker_container" "nodered_container" {
     internal = var.int_port
     external = var.ext_port[count.index]
   }
-  #volumes {
-  #  container_path = "/data"
-  #  host_path = "/home/ubuntu/noderedvol"
-  #}
+  volumes {
+    container_path = "/data"
+    host_path = "${path.cwd}/noderedvol"
+  }
 }
