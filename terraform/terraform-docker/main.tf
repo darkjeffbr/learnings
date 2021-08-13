@@ -9,6 +9,12 @@ terraform {
 
 provider "docker" {}
 
+resource "null_resource" "docker_vol" {
+  provisioner "local-exec" {
+    command = "mkdir noderedvol/ || true && chown -R 1000:1000 noderedvol/"
+  }
+}
+
 resource "random_string" "random" {
   count = var.container_count
   length = 4
@@ -27,5 +33,9 @@ resource "docker_container" "nodered_container" {
   ports {
     internal = var.int_port
     external = var.ext_port
+  }
+  volumes {
+    container_path = "/data"
+    host_path = "/home/ubuntu/noderedvol"
   }
 }
