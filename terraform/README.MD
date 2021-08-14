@@ -33,5 +33,8 @@ terraform apply -refresh-only # Has the same effect as the refresh command, but 
 
 terraform plan -var-file custom-values.tfvars -var custom_var=1 -var custom_var=2 # Terraform will use the last provided value for custom_var, which is in this case 2. So the order is important!!
 
+
+terraform workspace new dev # It creates and switch to a new workspace
+
 ### AWS commands
 aws ec2 describe-security-groups
