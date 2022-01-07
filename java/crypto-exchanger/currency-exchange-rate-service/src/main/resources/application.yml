@@ -1,0 +1,3 @@
+server:
+  servlet:
+    context-path: /currency-exchange-rate/v1
