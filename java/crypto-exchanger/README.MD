@@ -2,4 +2,4 @@
 
 An experiment to develop a full application environment with all the infrastructure it needs.
 
-!(./crypto-exchanger.drawio.png)
+![](./crypto-exchanger.drawio.png)
