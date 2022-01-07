@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope
+  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <ServiceBookingRulesResponse
+      xmlns="http://www.juniper.es/webservice/2007/">
+      <BookingRulesRS Url="http://xml-uat.bookingengine.es" TimeStamp="2021-06-01T12:37:54.4026972+02:00" IntCode="JZhMh1XVcMFMz9Uz7zPcsdXfSe/w0B98+PK99tE+KUs=">
+        <Warnings>
+          <Warning Code="warnCheckNotPossible" Text="Price review is not possible" />
+        </Warnings>
+        <Results>
+          <ServiceResult Status="OK" Start="2021-06-07" End="2021-06-07" DestinationZone="118" Code="6IwSkuinzsgXcNiI6VDtSQ==">
+            <BookingCode ExpirationDate="2021-06-01T12:47:54.3870731+02:00">n8xL/ikoco+8UyvWDsGLkNlnHkJsH2ZDrRQVnKs844l5RZb8zAareNePTeiHxr7r9yRzD5oavBZNVQNxte/6BoBZktFv2/7nbMZ+zujuKIeeUWUabvGWWbkBp3fy+cOldWF8tNTkyGYQO+73B2vva5R5VAvtMeQATd+X24PxaAbeBMIO0WE9xiR0AyCVZ63iWNWW619dfoNdyiiUEtEajlJsgQ6CBcltVil0uNzsAJfSv3a/NHdmxVC4zv0eWI2j3HKLjkDIVOR7Cm97+UHjdA==</BookingCode>
+            <ServiceRequiredFields>
+              <ServiceBooking>
+                <Paxes>
+                  <Pax IdPax="1">
+                    <Name>Holder Name</Name>
+                    <Surname>Holder Surname</Surname>
+                    <Age>30</Age>
+                  </Pax>
+                </Paxes>
+                <Holder>
+                  <RelPax IdPax="1" />
+                </Holder>
+                <Elements>
+                  <ServiceElement>
+                    <BookingCode>n8xL/ikoco+8UyvWDsGLkNlnHkJsH2ZDrRQVnKs844l5RZb8zAareNePTeiHxr7r9yRzD5oavBZNVQNxte/6BoBZktFv2/7nbMZ+zujuKIeeUWUabvGWWbkBp3fy+cOldWF8tNTkyGYQO+73B2vva5R5VAvtMeQATd+X24PxaAbeBMIO0WE9xiR0AyCVZ63iWNWW619dfoNdyiiUEtEajlJsgQ6CBcltVil0uNzsAJfSv3a/NHdmxVC4zv0eWI2j3HKLjkDIVOR7Cm97+UHjdA==</BookingCode>
+                    <RelPaxesDist>
+                      <RelPaxDist>
+                        <RelPaxes>
+                          <RelPax IdPax="1" />
+                        </RelPaxes>
+                      </RelPaxDist>
+                    </RelPaxesDist>
+                    <ServiceBookingInfo>
+                      <MeetingPointInfo Code="000" MeetingTime="0001-01-01T00:00:00" />
+                      <Language Code="en" />
+                    </ServiceBookingInfo>
+                  </ServiceElement>
+                </Elements>
+              </ServiceBooking>
+            </ServiceRequiredFields>
+            <CancellationPolicy CurrencyCode="EUR">
+              <FirstDayCostCancellation Hour="00:00">2021-05-29</FirstDayCostCancellation>
+              <Description> * Cancelling from 01/06/2021 at 00:00:00 to 29/05/2021 at 00:00:00: 0 € * Cancelling from 29/05/2021 at 00:00:00 to 03/06/2021 at 00:00:00: 50.00 % of expenses * Cancelling from 03/06/2021 at 00:00:00 to 08/06/2021 at 00:00:00: 100.00 % of expenses</Description>
+              <PolicyRules>
+                <Rule From="5" To="9" DateFrom="2021-05-29" DateFromHour="00:00" DateTo="2021-06-03" DateToHour="00:00" Type="V" FixedPrice="0" PercentPrice="50" Nights="0" ApplicationTypeNights="Average" />
+                <Rule From="0" To="4" DateFrom="2021-06-03" DateFromHour="00:00" DateTo="2021-06-08" DateToHour="00:00" Type="V" FixedPrice="0" PercentPrice="100" Nights="0" ApplicationTypeNights="Average" />
+              </PolicyRules>
+            </CancellationPolicy>
+            <CancellationPolicyCost CurrencyCode="USD">
+              <FirstDayCostCancellation Hour="00:00">2021-05-29</FirstDayCostCancellation>
+              <Description> * Cancelling from 01/06/2021 at 00:00:00 to 29/05/2021 at 00:00:00: 0  USD * Cancelling from 29/05/2021 at 00:00:00 to 03/06/2021 at 00:00:00: 50.00 % of expenses * Cancelling from 03/06/2021 at 00:00:00 to 08/06/2021 at 00:00:00: 100.00 % of expenses</Description>
+              <PolicyRules>
+                <Rule From="5" To="9" DateFrom="2021-05-29" DateFromHour="00:00" DateTo="2021-06-03" DateToHour="00:00" Type="V" FixedPrice="0" PercentPrice="50" Nights="0" ApplicationTypeNights="Average" />
+                <Rule From="0" To="4" DateFrom="2021-06-03" DateFromHour="00:00" DateTo="2021-06-08" DateToHour="00:00" Type="V" FixedPrice="0" PercentPrice="100" Nights="0" ApplicationTypeNights="Average" />
+              </PolicyRules>
+            </CancellationPolicyCost>
+            <PriceInformation>
+              <ServiceInfo>
+                <Name>Excursión Coves del Drach</Name>
+                <Description>Excursion to Drach Caves, stunning natural scenery, carved by nature through the centuries</Description>
+                <Images>
+                  <Image Featured="true">
+                    <FileName>https://juniper-uat.bookingengine.es/images/upload_p/Bus_anfibio.jpg</FileName>
+                  </Image>
+                </Images>
+              </ServiceInfo>
+              <ServiceOptions>
+                <ServiceOption Code="3">
+                  <Name>Ticket with concert</Name>
+                  <OccupancyAllowed Children="true" />
+                  <Description><div id="cuerpo_contenido">
+                    <div><span class="negro">The</span> concert on Lake Martel has been a feature since 1935 and is comprised of four pieces of classical music:</div>
+                    <ul>
+                      <li>Alborada gallega (Gallician sunrise) » Caballero</li>
+                      <li>Plaisir D'amour » Martini</li>
+                      <li>Tristesse Studio 3 Opus 10 » Chopín</li>
+                      <li>Barcarola, from the "Tales of Hoffmann" » Offenbach</li>
+                    </ul>
+                    This concert is live, played by a quartet of two violins, cello and harmonium, and lasts 10 minutes.</div>
+                    <p>?</p></Description>
+                  <Images>
+                    <Image>https://juniper-uat.bookingengine.es/images/upload_p/1270127676_0.jpg</Image>
+                  </Images>
+                  <Dates>
+                    <Date Start="2021-06-07T10:15:00" End="2021-06-07T10:15:00" Duration="1" RatePlanCode="fuYLMSQUyj9cDYlAfLTCoyot/HRq2YQPufl2Yi9aESRqCC+SkMLu2q7VF4oPgvzKp20P4jnSUHoqUsNfD5tHoVRAII9W8AJ8iA17arKBo4aTLgbjl/dFO56lPXs/E/DspsxAhUEOBzGmDsooIAWFN5rpG/46Aja7o4H0LezuexU=">
+                      <Prices>
+                        <Price Type="S" Currency="EUR">
+                          <TotalFixAmounts Gross="28" Nett="28">
+                            <Service Amount="28" />
+                          </TotalFixAmounts>
+                        </Price>
+                        <Price Type="C" Currency="USD">
+                          <TotalFixAmounts Gross="25" Nett="25">
+                            <Service Amount="25" />
+                          </TotalFixAmounts>
+                        </Price>
+                      </Prices>
+                    </Date>
+                  </Dates>
+                  <RestrictedMeetingPoints>
+                    <MeetingPoint Code="149" Time="00:00" DestinationCode="15011">
+                      <Name>APARTAMENTOS ALLSUN PIL-LARI PLAYA</Name>
+                    </MeetingPoint>
+                  </RestrictedMeetingPoints>
+                  <Languages>
+                    <Language Code="en">
+                      <Name>English</Name>
+                    </Language>
+                    <Language Code="es">
+                      <Name>Spanish</Name>
+                    </Language>
+                  </Languages>
+                </ServiceOption>
+              </ServiceOptions>
+            </PriceInformation>
+          </ServiceResult>
+        </Results>
+      </BookingRulesRS>
+    </ServiceBookingRulesResponse>
+  </soap:Body>
+</soap:Envelope>
