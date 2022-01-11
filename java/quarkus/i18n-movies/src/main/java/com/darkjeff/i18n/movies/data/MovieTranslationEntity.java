@@ -7,7 +7,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "movie_translation")
 public class MovieTranslationEntity {
@@ -31,51 +33,4 @@ public class MovieTranslationEntity {
     @JoinColumn(name = "movie", insertable = false, updatable = false)
     private MovieEntity movie;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LanguageEntity getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(LanguageEntity language) {
-        this.language = language;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public MovieEntity getMovie() {
-        return movie;
-    }
-
-    public void setMovie(MovieEntity movie) {
-        this.movie = movie;
-    }
 }

@@ -6,7 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "movie")
 public class MovieEntity {
@@ -19,29 +21,5 @@ public class MovieEntity {
     private LocalDate release;
 
     private Float views;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LocalDate getRelease() {
-        return release;
-    }
-
-    public void setRelease(LocalDate release) {
-        this.release = release;
-    }
-
-    public Float getViews() {
-        return views;
-    }
-
-    public void setViews(Float views) {
-        this.views = views;
-    }
 
 }
