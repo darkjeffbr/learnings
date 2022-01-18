@@ -24,7 +24,7 @@ As the year went by I started to play and read about different technologies/prog
 
 ## Currently studying
 
-## Started but is on hold
+## On hold
 - [ ] AWS Certified Developer Associate
 - [ ] Linux LPIC-1
 
