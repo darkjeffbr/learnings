@@ -1,6 +1,6 @@
 package com.darkjeff.i18n.movies.data;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class MovieEntity {
     private Integer id;
 
     @Column(name = "release_date")
-    private LocalDate release;
+    private ZonedDateTime release;
 
     private Float views;
 

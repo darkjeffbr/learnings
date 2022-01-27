@@ -1,18 +1,17 @@
 package com.darkjeff.i18n.movies.resource.dto;
 
-import com.darkjeff.i18n.movies.resource.MonetaryAmountAdapter;
-import java.time.LocalDate;
-import javax.json.bind.annotation.JsonbTypeAdapter;
-import javax.money.MonetaryAmount;
+import javax.json.bind.annotation.JsonbProperty;
 import lombok.Data;
 
 @Data
 public class MovieDTO {
 
     private String title;
-    private LocalDate release;
-    private Float views;
-    @JsonbTypeAdapter(MonetaryAmountAdapter.class)
-    private MonetaryAmount productionCost;
-
+    private String release;
+    @JsonbProperty("utc_release")
+    private String utcRelease;
+    private String views;
+    private String productionCost;
+    //@JsonbTypeAdapter(MonetaryAmountAdapter.class)
+    ///private MonetaryAmount productionCost;
 }

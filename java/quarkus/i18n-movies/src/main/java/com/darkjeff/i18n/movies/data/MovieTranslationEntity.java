@@ -33,4 +33,5 @@ public class MovieTranslationEntity {
     @JoinColumn(name = "movie", insertable = false, updatable = false)
     private MovieEntity movie;
 
+    private String timezone;
 }
