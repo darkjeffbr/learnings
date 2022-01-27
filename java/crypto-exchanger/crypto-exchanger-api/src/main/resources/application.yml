@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: baeldung_route
+          uri: http://baeldung.com
+          predicates:
+          - Path=/baeldung**/**
+          filters:
+          - SetPath=/spring-rest-with-zuul-proxy
