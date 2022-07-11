@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'MyFont';
+    src: url('./Pineapple_Days.otf'), url('./Water_Galon.ttf');
+    font-weight: 600;
+    font-style: normal;
+}
+.hello {
+    color: red;
+    font-family: 'MyFont';
+    background: url(./icon.png);
+}
