@@ -1,0 +1,59 @@
+.button-container {
+    display: flex;
+    flex-flow: wrap;
+    gap: 20px;
+    width: 650px;
+}
+
+.round-button {
+    display: flex;
+    width: 250px;
+    height: 250px;
+    background-color: #000;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-button {
+    box-sizing: border-box;
+    width: 60%;
+    height: 60%;
+    border: 20px solid #dc8fc5;
+}
+
+.triangle-button {
+    width: 65%;
+    height: 65%;
+    background-color: #2edf97;
+}
+
+.ex-button {
+    width: 80%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ex-button .bar{
+    width: 12%;
+    height: 100%;
+    background-color: #6a8ac3;
+}
+
+.ex-button .bar-1{
+    transform: rotate(45deg);
+}
+
+.ex-button .bar-2{
+    transform: rotate(-45deg);
+}
+
+.circle-button {
+    box-sizing: border-box;
+    width: 80%;
+    height: 80%;
+    border: 20px solid #f7363b;
+    border-radius: 50%;
+}

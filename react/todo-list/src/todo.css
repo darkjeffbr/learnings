@@ -1,0 +1,21 @@
+.todo-list {
+    background-color: #ffffc293;
+    border-radius: 1em;
+    border: 1px solid #cfcfaf93;
+    padding: 2em;
+}
+
+.todo-list input {
+    border-radius: 0.75em;
+    border: 1px solid #CDCDCD;
+    padding: 1em;
+}
+
+.todo-item {
+    margin-top: 0.5em;
+}
+
+.todo-item span {
+    margin-left: 0.5em;
+}
+
