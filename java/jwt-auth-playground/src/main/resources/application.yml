@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3309/jwt-playground
+    username: root
+    password: root
+  sql:
+    init:
+      mode: ALWAYS
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#spring.jpa.show-sql: true
