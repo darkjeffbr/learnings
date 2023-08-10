@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  httpd:
+    build:
+      context: .
+    container_name: "apache-container"
+    volumes:
+      - ${PWD}/cgi-bin:/usr/local/apache2/cgi-bin/
+      - ${PWD}/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - "9090:80"
+

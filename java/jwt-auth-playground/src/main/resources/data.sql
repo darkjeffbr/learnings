@@ -1,6 +1,6 @@
-INSERT INTO users (name, passwd, created_at, created_by) VALUES
-('admin', 'admin1', CURRENT_TIMESTAMP(), 'spring'),
-('user', 'user1', CURRENT_TIMESTAMP(), 'spring')
+INSERT INTO users (name, email, passwd, created_at, created_by) VALUES
+('admin', 'admin@host.com', 'admin1', CURRENT_TIMESTAMP(), 'spring'),
+('user', 'user@host.com', 'user1', CURRENT_TIMESTAMP(), 'spring')
 ;
 
 INSERT INTO roles (role, created_at, created_by) VALUES

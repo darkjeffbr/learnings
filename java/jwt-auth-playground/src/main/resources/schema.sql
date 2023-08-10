@@ -17,6 +17,7 @@ CREATE TABLE hardware (
 CREATE TABLE users (
     user_id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     passwd VARCHAR(255) NOT NULL,
     created_at DATETIME NOT NULL,
     created_by VARCHAR(255) NOT NULL,

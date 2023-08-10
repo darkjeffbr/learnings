@@ -24,6 +24,7 @@ public class User extends AuditEntity {
     private Long id;
 
     private String name;
+    private String email;
 
     private String passwd;
 
