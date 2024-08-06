@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: cqrs
+  datasource:
+    command:
+      url: jdbc:h2:mem:commandDatabase
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+    query:
+      url: jdbc:h2:mem:queryDatabase
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
