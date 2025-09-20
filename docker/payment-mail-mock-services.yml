@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  killbill:
+    image: killbill/killbill:0.24.6
+    environment:
+      - KILLBILL_DAO_URL=jdbc:mysql://killbill-db:3306/killbill
+      - KILLBILL_DAO_USER=killbill
+      - KILLBILL_DAO_PASSWORD=killbill
+      - KILLBILL_SERVER_BASE_URL=http://localhost:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - killbill-db
+  killbill-db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=killbill
+      - MYSQL_USER=killbill
+      - MYSQL_PASSWORD=killbill
+    ports:
+      - "3306:3306"
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=true
+      - MP_SMTP_AUTH_ALLOW_INSECURE=true
